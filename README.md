@@ -31,12 +31,18 @@ git clone https://github.com/iamcheyan/Dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 ```
 
-### 2. 链接配置文件
+### 2. 运行初始化脚本
 
 ```bash
-# 链接 zshrc 到主目录
-ln -s ~/.dotfiles/zshrc ~/.zshrc
+bash init.sh
 ```
+
+初始化脚本会自动完成：
+- ✅ 检查并安装 zsh（如果未安装）
+- ✅ 安装 zinit 插件管理器
+- ✅ 创建 `~/Dotfiles` 软链接
+- ✅ 使用 dotlink 创建所有配置文件的软链接
+- ✅ 创建 `~/.zshrc` 软链接
 
 ### 3. 启动 Zsh
 
@@ -45,10 +51,31 @@ zsh
 ```
 
 首次启动时会自动：
-- 安装 zinit（如果未安装）
+- 安装 zinit（如果初始化脚本未完成）
 - 安装 Powerlevel10k 主题
 - 安装所有配置的插件和工具
 - 询问是否安装 Meslo 字体
+
+### 手动初始化（可选）
+
+如果不想使用 `init.sh`，也可以手动执行：
+
+```bash
+# 1. 安装 zsh（如果未安装）
+# Ubuntu/Debian:
+sudo apt-get install zsh
+
+# 2. 安装 zinit
+mkdir -p ~/.zinit
+git clone https://github.com/zdharma-continuum/zinit.git ~/.zinit/bin
+
+# 3. 创建软链接
+ln -s ~/.dotfiles ~/Dotfiles
+ln -s ~/.dotfiles/zshrc ~/.zshrc
+
+# 4. 使用 dotlink 创建配置文件软链接
+bash ~/.dotfiles/dotlink/dotlink link
+```
 
 ---
 
