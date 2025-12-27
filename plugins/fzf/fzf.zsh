@@ -6,12 +6,14 @@
 # 以下代码仅作为后备方案，兼容系统安装的工具
 
 # fd 命令设置（后备：如果 zinit 未安装，尝试使用系统安装的 fdfind）
-if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
-    mkdir -p ~/.local/bin 2>/dev/null
-    [[ ! -e ~/.local/bin/fd ]] && ln -sf "$(command -v fdfind)" ~/.local/bin/fd
-    # 确保 PATH 包含 ~/.local/bin（只在不存在时添加）
-    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    export PATH="$HOME/.local/bin:$PATH"
+if ! command -v fd >/dev/null 2>&1; then
+    if command -v fdfind >/dev/null 2>&1; then
+        mkdir -p ~/.local/bin 2>/dev/null
+        [[ ! -e ~/.local/bin/fd ]] && ln -sf "$(command -v fdfind)" ~/.local/bin/fd
+        # 确保 PATH 包含 ~/.local/bin（只在不存在时添加）
+        if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+            export PATH="$HOME/.local/bin:$PATH"
+        fi
     fi
 fi
 
@@ -27,7 +29,15 @@ fi
 # ============================================
 
 # 使用 fd 作为 fzf 的默认搜索命令（更快速）
-export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
+# 如果 fd 不可用，提示安装 fd，然后回退到 find
+if command -v fd >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fd --hidden --follow --exclude .git'
+elif command -v fdfind >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fdfind --hidden --follow --exclude .git'
+else
+    echo "提示: 建议安装 fd（https://github.com/sharkdp/fd），以加快 fzf 文件搜索速度。" >&2
+    export FZF_DEFAULT_COMMAND='find . -type f -not -path "*/\.git/*" 2>/dev/null'
+fi
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # 启用 fzf 官方键绑定（Ctrl+T / Alt+C / Ctrl+R）
@@ -63,13 +73,26 @@ ff() {
     # 交互式调用
     if [[ -t 0 ]]; then
         local target
+        local search_cmd
+        
+        # 确定搜索命令：优先使用 fd，其次 fdfind，最后使用 find
+        # 使用 which 或 command -v 检查，并验证命令是否真的可执行
+        if command -v fd >/dev/null 2>&1 && fd --version >/dev/null 2>&1; then
+            search_cmd=(fd -H .)
+        elif command -v fdfind >/dev/null 2>&1 && fdfind --version >/dev/null 2>&1; then
+            search_cmd=(fdfind -H .)
+        else
+            # 回退到 find 命令
+            search_cmd=(find . -type f -o -type d)
+        fi
+        
         if [[ $# -gt 0 ]]; then
             # 参数全部合并成字符串，直接作为查询内容传递（支持所有特殊字符）
             local query
             query="$*"
-            target=$(fd -H . | command fzf --query="${query}")
+            target=$("${search_cmd[@]}" 2>/dev/null | command fzf --query="${query}")
         else
-            target=$(fd -H . | command fzf)
+            target=$("${search_cmd[@]}" 2>/dev/null | command fzf)
         fi
         if [[ -n "$target" ]]; then
             if [[ -f "$target" ]]; then

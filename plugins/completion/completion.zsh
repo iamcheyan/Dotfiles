@@ -1,6 +1,39 @@
 autoload -Uz compinit
 compinit -C
 
+# fzf-tab: 用 fzf 替换 zsh 的默认补全选择菜单
+# 必须在 compinit 之后加载，但在 zsh-autosuggestions 之前加载
+zinit light Aloxaf/fzf-tab
+
+# ============================================
+# fzf-tab 配置
+# ============================================
+
+# 禁用某些命令的排序（如 git checkout）
+zstyle ':completion:*:git-checkout:*' sort false
+
+# 设置描述格式以启用分组支持
+# 注意：不要使用转义序列（如 '%F{red}%d%f'），fzf-tab 会忽略它们
+zstyle ':completion:*:descriptions' format '[%d]'
+
+# 设置列表颜色以启用文件名着色
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# 强制 zsh 不显示补全菜单，允许 fzf-tab 捕获明确的前缀
+zstyle ':completion:*' menu no
+
+# 预览目录内容（使用 eza，如果可用则使用 eza，否则使用 ls）
+if command -v eza >/dev/null 2>&1; then
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+    zstyle ':fzf-tab:complete:z:*' fzf-preview 'eza -1 --color=always $realpath'
+else
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls -1 --color=always $realpath'
+    zstyle ':fzf-tab:complete:z:*' fzf-preview 'ls -1 --color=always $realpath'
+fi
+
+# 使用 < 和 > 切换分组
+zstyle ':fzf-tab:*' switch-group '<' '>'
+
 # 添加本地 bin 目录到 PATH（用于手动安装的工具，如 superfile）
 # 只在 PATH 中不存在时添加，避免重复
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then

@@ -1,73 +1,104 @@
--- define common options
+-- ============================================
+-- Keymaps Configuration
+-- ============================================
+
+-- Define common options
 local opts = {
-    noremap = true, -- non-recursive
-    silent = true, -- do not show message
+  noremap = true, -- non-recursive
+  silent = true,  -- do not show message
 }
 
------------------
--- Normal mode --
------------------
+-- Options for keymaps that don't need noremap
+local silent_opts = {
+  silent = true,
+}
 
--- Hint: see `:h vim.map.set()`
--- Better window navigation
-vim.keymap.set('n', '<C-h>', '<C-w>h', opts)
-vim.keymap.set('n', '<C-j>', '<C-w>j', opts)
-vim.keymap.set('n', '<C-k>', '<C-w>k', opts)
-vim.keymap.set('n', '<C-l>', '<C-w>l', opts)
+-- ============================================
+-- Normal Mode Keymaps
+-- ============================================
 
--- Resize with arrows
--- delta: 2 lines
-vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', opts)
-vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', opts)
-vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', opts)
-vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', opts)
+-- Window Navigation
+-- Better window navigation using Ctrl + h/j/k/l
+vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
 
--- for nvim-tree
--- default leader key: \
-vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', opts)
+-- Window Resize
+-- Resize windows with arrow keys (delta: 2 lines)
+vim.keymap.set("n", "<C-Up>", ":resize -2<CR>", opts)
+vim.keymap.set("n", "<C-Down>", ":resize +2<CR>", opts)
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", opts)
+vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
------------------
--- Visual mode --
------------------
+-- File Tree
+-- Toggle nvim-tree (default leader key: Space)
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 
--- Hint: start visual mode with the same area as the previous area and the same mode
-vim.api.nvim_set_keymap('v', '<', '<gv', opts)
-vim.api.nvim_set_keymap('v', '>', '>gv', opts)
+-- Terminal
+-- Open terminal in split windows
+vim.keymap.set("n", "<leader>tr", function()
+  vim.cmd("vsplit | terminal")
+end, { desc = "Terminal Right" })
 
--- 撤销
-vim.api.nvim_set_keymap('n', '<C-z>', 'u', { silent = true })
+vim.keymap.set("n", "<leader>tb", function()
+  vim.cmd("split | terminal")
+end, { desc = "Terminal Bottom" })
 
--- 恢复撤销
-vim.api.nvim_set_keymap('n', '<C-y>', '<C-r>', { silent = true })
+-- File Operations
+-- Save file
+vim.keymap.set("n", "<C-s>", ":w<CR>", silent_opts)
 
--- 保存
-vim.api.nvim_set_keymap('n', '<C-s>', ':w<CR>', { silent = true })
+-- Open file
+vim.keymap.set("n", "<C-o>", ":e<CR>", silent_opts)
 
--- 直接退出
-vim.api.nvim_set_keymap('n', '<C-q>', ':q!<CR>', { silent = true })
+-- New file
+vim.keymap.set("n", "<C-n>", ":enew<CR>", silent_opts)
 
--- 复制、剪切、粘贴
-vim.api.nvim_set_keymap('v', '<C-c>', '"+y', { silent = true })
-vim.api.nvim_set_keymap('v', '<C-x>', '"+d', { silent = true })
-vim.api.nvim_set_keymap('n', '<C-v>', '"+p', { silent = true })
+-- Close current window
+vim.keymap.set("n", "<C-w>", ":q<CR>", silent_opts)
 
--- 打开文件
-vim.api.nvim_set_keymap('n', '<C-o>', ':e<CR>', { silent = true })
+-- Quit without saving
+vim.keymap.set("n", "<C-q>", ":q!<CR>", silent_opts)
 
--- 新建文件
-vim.api.nvim_set_keymap('n', '<C-n>', ':enew<CR>', { silent = true })
+-- Tab Operations
+-- Open new tab
+vim.keymap.set("n", "<C-t>", ":tabnew<CR>", silent_opts)
 
--- 关闭当前窗口
-vim.api.nvim_set_keymap('n', '<C-w>', ':q<CR>', { silent = true })
+-- Buffer Operations
+-- Next buffer
+vim.keymap.set("n", "<C-f>", ":bnext<CR>", silent_opts)
 
--- 在新标签页中打开文件
-vim.api.nvim_set_keymap('n', '<C-t>', ':tabnew<CR>', { silent = true })
+-- Previous buffer
+vim.keymap.set("n", "<C-b>", ":bprevious<CR>", silent_opts)
 
--- 下一个缓冲区
-vim.api.nvim_set_keymap('n', '<C-f>', ':bnext<CR>', { silent = true })
+-- Undo/Redo
+-- Undo
+vim.keymap.set("n", "<C-z>", "u", silent_opts)
 
--- 上一个缓冲区
-vim.api.nvim_set_keymap('n', '<C-b>', ':bprevious<CR>', { silent = true })
+-- Redo
+vim.keymap.set("n", "<C-y>", "<C-r>", silent_opts)
 
--- 注释/取消注释当前行或选中的多行
-vim.api.nvim_set_keymap('n', '<C-/>', ':CommentToggle<CR>', { silent = true })
+-- Copy/Paste
+-- Paste from system clipboard
+vim.keymap.set("n", "<C-v>", '"+p', silent_opts)
+
+-- Comment Toggle
+-- Toggle comment on current line or selected lines
+vim.keymap.set("n", "<C-/>", ":CommentToggle<CR>", silent_opts)
+
+-- ============================================
+-- Visual Mode Keymaps
+-- ============================================
+
+-- Indentation
+-- Keep selection after indenting
+vim.keymap.set("v", "<", "<gv", opts)
+vim.keymap.set("v", ">", ">gv", opts)
+
+-- Copy/Cut to System Clipboard
+-- Copy to system clipboard
+vim.keymap.set("v", "<C-c>", '"+y', silent_opts)
+
+-- Cut to system clipboard
+vim.keymap.set("v", "<C-x>", '"+d', silent_opts)

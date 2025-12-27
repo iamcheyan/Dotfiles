@@ -35,7 +35,9 @@ zi_cmd ducaale/xh xh
 
 # 文件工具
 zi_cmd sharkdp/bat bat
-zi_cmd sharkdp/fd fd
+# fd 需要特殊处理，因为文件在子目录中
+zinit ice as"command" from"gh-r" mv"fd-*/fd -> fd" pick"fd" sbin"fd"
+zinit light sharkdp/fd
 # ripgrep 需要特殊处理，因为文件在子目录中
 zinit ice as"command" from"gh-r" mv"ripgrep-*/rg -> rg" pick"rg" sbin"rg"
 zinit light BurntSushi/ripgrep

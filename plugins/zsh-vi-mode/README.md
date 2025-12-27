@@ -24,7 +24,7 @@
 
 ## 安装
 
-本插件已通过 Zinit 自动安装，配置在 `~/.dotfiles/plugins/plugins.zsh` 中：
+本插件已通过 Zinit 自动安装，配置在 `~/.dotfiles/plugins/plugins/plugins.zsh` 中：
 
 ```zsh
 zinit light jeffreytse/zsh-vi-mode
@@ -200,7 +200,7 @@ and => or
 可以自定义退出键，例如使用 `jk` 或 `jj`：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 只在 Insert 模式下使用 jk 退出，其他模式仍使用默认 ESC
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
@@ -220,7 +220,7 @@ ZVM_VI_ESCAPE_BINDKEY=jk
 使用 `zvm_config` 函数进行统一配置：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 function zvm_config() {
   # 设置初始模式为 Insert 模式
@@ -239,7 +239,7 @@ function zvm_config() {
 自定义不同模式的光标样式：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 禁用光标样式功能
 ZVM_CURSOR_STYLE_ENABLED=false
@@ -263,7 +263,7 @@ ZVM_VISUAL_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE   # Visual 模式：下划线
 启用系统剪贴板集成（默认禁用）：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 启用系统剪贴板
 ZVM_SYSTEM_CLIPBOARD_ENABLED=true
@@ -293,7 +293,7 @@ ZVM_CLIPBOARD_PASTE_CMD='xclip -selection clipboard -o'
 自定义 `gx` 打开 URL/文件的命令：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 覆盖默认打开命令
 ZVM_OPEN_CMD='xdg-open'
@@ -312,7 +312,7 @@ ZVM_OPEN_FILE_CMD='open -a "Visual Studio Code"'
 自定义 `vv` 使用的编辑器：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 使用 nvim 作为外部编辑器
 ZVM_VI_EDITOR='nvim'
@@ -323,7 +323,7 @@ ZVM_VI_EDITOR='nvim'
 设置命令行的初始模式：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 总是以 Insert 模式开始
 ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
@@ -340,7 +340,7 @@ ZVM_LINE_INIT_MODE=$ZVM_MODE_LAST
 自定义高亮样式（surround、visual-line 等）：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 前景色（颜色名或十六进制值）
 ZVM_VI_HIGHLIGHT_FOREGROUND=green
@@ -359,7 +359,7 @@ ZVM_VI_HIGHLIGHT_EXTRASTYLE=bold,underline
 默认启用延迟键绑定功能，可以提升启动速度。要禁用它：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加（必须在插件加载前设置）
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加（必须在插件加载前设置）
 
 ZVM_LAZY_KEYBINDINGS=false
 ```
@@ -369,7 +369,7 @@ ZVM_LAZY_KEYBINDINGS=false
 调整键输入超时时间（默认 0.4 秒）：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 ZVM_KEYTIMEOUT=0.5  # 0.5 秒
 ```
@@ -379,7 +379,7 @@ ZVM_KEYTIMEOUT=0.5  # 0.5 秒
 选择读取键引擎：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 使用 NEX 引擎（默认，Beta 版本，性能更好）
 ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_NEX
@@ -398,7 +398,7 @@ ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_DEFAULT
 定义自定义 widget 和键绑定：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 自定义 widget 函数
 function my_custom_widget() {
@@ -420,7 +420,7 @@ function zvm_after_lazy_keybindings() {
 使用 `ZVM_MODE` 变量获取当前模式并显示指示器：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 function zvm_after_select_vi_mode() {
   case $ZVM_MODE in
@@ -449,7 +449,7 @@ function zvm_after_select_vi_mode() {
 插件提供了多个钩子函数来执行额外命令：
 
 ```zsh
-# 在 ~/.dotfiles/plugins/local.zsh 中添加
+# 在 ~/.dotfiles/plugins/local/local.zsh 中添加
 
 # 在插件初始化前执行
 zvm_before_init_commands+=('echo "Before init"')

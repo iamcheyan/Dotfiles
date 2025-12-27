@@ -27,7 +27,7 @@
 - 提供 `zz` 别名（`zoxide query -i`）
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/zinit.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/zinit/zinit.zsh` 加载
 - 必须在所有其他插件配置之前加载
 
 **提供的功能：**
@@ -41,7 +41,7 @@
 - 加载用户自定义的 `~/.p10k.zsh` 配置
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/prompt.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/prompt/prompt.zsh` 加载
 - 在 `zinit.zsh` 之后加载
 
 **提供的功能：**
@@ -56,14 +56,26 @@
 - 替代 Oh My Zsh，只加载需要的插件
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/plugins.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/plugins/plugins.zsh` 加载
 
 **安装的插件：**
+
+#### 核心功能插件
+- `jeffreytse/zsh-vi-mode` - Vim 模式支持（必须在 autosuggestions 之前加载）
 - `zsh-users/zsh-autosuggestions` - 命令自动建议
 - `zsh-users/zsh-syntax-highlighting` - 语法高亮（必须最后加载）
-- `jeffreytse/zsh-vi-mode` - Vim 模式支持
+
+#### Oh My Zsh 插件片段
 - `OMZP::sudo` - 双击 ESC 键添加 `sudo` 前缀
 - `OMZP::git` - Git 命令别名和函数（不加载整个 OMZ）
+- `OMZP::copypath` - 复制文件或目录路径到剪贴板
+- `OMZP::copyfile` - 复制文件内容到剪贴板
+
+#### 实用工具插件
+- `MichaelAquilina/zsh-you-should-use` - 提醒使用已存在的别名
+- `le0me55i/zsh-extract` - 自动解压各种压缩文件
+- `paulirish/git-open` - 在浏览器中打开 Git 仓库页面
+- `0mykull/zshcp` - Zsh 剪贴板管理（历史记录、快捷键）
 
 **提供的功能：**
 - 输入命令时显示历史建议
@@ -71,6 +83,11 @@
 - Vim 键绑定支持
 - `sudo` 快捷键（双击 ESC）
 - Git 常用命令别名
+- 路径和文件内容复制到剪贴板
+- 别名使用提醒
+- 自动解压压缩文件
+- 在浏览器中打开 Git 仓库
+- 剪贴板管理和历史记录
 
 ### 4. tools.zsh - CLI 工具管理
 
@@ -79,7 +96,7 @@
 - 使用统一的 `zi_cmd()` 函数简化工具安装
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/tools.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/tools/tools.zsh` 加载
 - 工具会在首次使用时自动下载安装
 
 **安装的工具：**
@@ -99,6 +116,7 @@
 - `yq` - YAML 处理工具
 - `sd` - 字符串替换工具
 - `choose` - 文本选择工具
+- `glow` - Markdown 渲染器
 
 #### 网络工具
 - `xh` - HTTP 客户端（替代 curl）
@@ -133,21 +151,30 @@
 
 **作用：**
 - 初始化 Zsh 补全系统
+- 配置 fzf-tab 补全增强
 - 配置 PATH，确保所有工具可用
 - 初始化 `zoxide`
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/completion.zsh` 加载
-- 在 `tools.zsh` 之后加载（确保工具已安装）
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/completion/completion.zsh` 加载
+- 在 `tools.zsh` 之后、`plugins.zsh` 之前加载（确保加载顺序正确）
+
+**补全插件：**
+- `Aloxaf/fzf-tab` - 用 fzf 替换 Zsh 的默认补全选择菜单
+  - 必须在 `compinit` 之后加载
+  - 必须在 `zsh-autosuggestions` 之前加载
 
 **PATH 配置逻辑：**
 1. 添加 `~/.local/bin`（手动安装的工具，如 superfile）
-2. 添加 `$ZPFX/bin`（Zinit 使用 `sbin` 安装的工具）
-3. 递归查找 `~/.zinit/plugins/*/` 目录中的可执行文件
-4. 自动添加包含可执行文件的子目录到 PATH
+2. 添加 `~/.local/nvim/bin`（Neovim 二进制文件）
+3. 添加 `~/.cargo/bin`（Rust cargo 工具）
+4. 添加 `~/.npm-global/bin`（npm 全局包）
+5. 添加 `$ZPFX/bin`（Zinit 使用 `sbin` 安装的工具）
+6. 递归查找 `~/.zinit/plugins/*/` 目录中的可执行文件
+7. 自动添加包含可执行文件的子目录到 PATH
 
 **提供的功能：**
-- Zsh 命令补全
+- Zsh 命令补全（使用 fzf-tab 增强）
 - `zoxide` 目录跳转（`z` 命令）
 - 所有工具自动在 PATH 中可用
 
@@ -158,7 +185,7 @@
 - 提供自定义搜索函数
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/fzf.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/fzf/fzf.zsh` 加载
 - 在 `tools.zsh` 之后加载（确保 fzf 已安装）
 
 **配置内容：**
@@ -269,7 +296,7 @@ superfiles             # 同上（拼写容错）
 - 提供字体安装功能
 
 **调用方式：**
-- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/local.zsh` 加载
+- 在 `~/.zshrc` 中通过 `source ~/.dotfiles/plugins/local/local.zsh` 加载
 - 最后加载，可以覆盖之前的配置
 
 **提供的功能：**
@@ -351,11 +378,96 @@ y [目录]              # Yazi 文件管理器（退出后切换目录）
 install:font          # 字体安装
 ```
 
+## 完整插件列表
+
+### Zsh 功能插件（plugins.zsh）
+
+| 插件 | 仓库 | 类型 | 功能描述 |
+|------|------|------|----------|
+| **zsh-vi-mode** | `jeffreytse/zsh-vi-mode` | 核心功能 | Vim 模式支持，提供 Vim 键绑定 |
+| **zsh-autosuggestions** | `zsh-users/zsh-autosuggestions` | 核心功能 | 命令自动建议，根据历史记录提示 |
+| **zsh-syntax-highlighting** | `zsh-users/zsh-syntax-highlighting` | 核心功能 | 语法高亮，实时高亮命令语法 |
+| **sudo** | `OMZP::sudo` | OMZ 片段 | 双击 ESC 键添加 `sudo` 前缀 |
+| **git** | `OMZP::git` | OMZ 片段 | Git 命令别名和辅助函数 |
+| **copypath** | `OMZP::copypath` | OMZ 片段 | 复制文件或目录路径到剪贴板 |
+| **copyfile** | `OMZP::copyfile` | OMZ 片段 | 复制文件内容到剪贴板 |
+| **you-should-use** | `MichaelAquilina/zsh-you-should-use` | 实用工具 | 提醒使用已存在的别名 |
+| **extract** | `le0me55i/zsh-extract` | 实用工具 | 自动解压各种压缩文件（30+ 格式） |
+| **git-open** | `paulirish/git-open` | 实用工具 | 在浏览器中打开 Git 仓库页面 |
+| **zshcp** | `0mykull/zshcp` | 实用工具 | Zsh 剪贴板管理（历史记录、快捷键） |
+
+**加载顺序要求**:
+- `zsh-vi-mode` 必须在 `zsh-autosuggestions` 之前加载
+- `zsh-syntax-highlighting` 必须最后加载
+
+### 补全插件（completion.zsh）
+
+| 插件 | 仓库 | 功能描述 |
+|------|------|----------|
+| **fzf-tab** | `Aloxaf/fzf-tab` | 用 fzf 替换 Zsh 的默认补全选择菜单 |
+
+**加载顺序要求**:
+- 必须在 `compinit` 之后加载
+- 必须在 `zsh-autosuggestions` 之前加载
+
+### CLI 工具（tools.zsh）
+
+#### 系统监控
+| 工具 | 命令 | 功能描述 |
+|------|------|----------|
+| **btop** | `btop` | 系统资源监控（替代 htop） |
+| **bottom** | `btm` | 系统监控工具 |
+| **duf** | `duf` | 磁盘使用情况查看 |
+
+#### Git / 开发
+| 工具 | 命令 | 功能描述 |
+|------|------|----------|
+| **lazygit** | `lazygit` | Git 交互式界面（TUI） |
+| **delta** | `delta` | Git diff 查看器 |
+| **gh** | `gh` | GitHub CLI |
+
+#### 文本处理
+| 工具 | 命令 | 功能描述 |
+|------|------|----------|
+| **jq** | `jq` | JSON 处理工具 |
+| **yq** | `yq` | YAML 处理工具 |
+| **sd** | `sd` | 字符串替换工具（比 sed 更快） |
+| **choose** | `choose` | 文本选择工具 |
+| **glow** | `glow` | Markdown 渲染器 |
+
+#### 网络工具
+| 工具 | 命令 | 功能描述 |
+|------|------|----------|
+| **xh** | `xh` | HTTP 客户端（替代 curl） |
+
+#### 文件工具
+| 工具 | 命令 | 功能描述 |
+|------|------|----------|
+| **bat** | `bat` | 文件查看器（带语法高亮） |
+| **fd** | `fd` | 文件搜索工具（替代 find） |
+| **ripgrep** | `rg` | 文本搜索工具（替代 grep） |
+| **zoxide** | `z` | 智能目录跳转 |
+| **yazi** | `yazi` | 终端文件管理器 |
+| **eza** | `eza` | `ls` 的现代替代品 |
+| **dust** | `dust` | 磁盘使用分析 |
+| **procs** | `procs` | `ps` 的现代替代品 |
+| **zellij** | `zellij` | 终端多路复用器 |
+
+#### 特殊工具
+| 工具 | 命令 | 功能描述 | 特殊说明 |
+|------|------|----------|----------|
+| **fzf** | `fzf` | 模糊查找器 | 需要额外配置（见 `fzf.zsh`） |
+| **atuin** | `atuin` | 命令历史搜索 | 自动初始化并加载历史搜索功能 |
+
 ## 注意事项
 
 1. **首次使用**：工具会在首次使用时自动下载，可能需要等待几秒钟
 2. **PATH 设置**：所有工具都通过 `completion.zsh` 自动添加到 PATH
 3. **加载顺序**：不要随意更改加载顺序，某些配置有依赖关系
+   - `zinit.zsh` → `prompt.zsh` → `tools.zsh` → `completion.zsh` → `plugins.zsh` → `fzf.zsh` → `local.zsh`
+   - `fzf-tab` 必须在 `compinit` 之后、`zsh-autosuggestions` 之前加载
+   - `zsh-vi-mode` 必须在 `zsh-autosuggestions` 之前加载
+   - `zsh-syntax-highlighting` 必须最后加载
 4. **机器特定配置**：`local.zsh` 是唯一应该手动编辑的文件（如果需要）
 5. **字体安装**：首次启动时会询问，也可以随时使用 `install:font` 命令
 
@@ -374,6 +486,3 @@ install:font          # 字体安装
 - 检查网络连接
 - 手动运行：`bash ~/.dotfiles/scripts/install/install_font.sh --force`
 
----
-
-**最后更新**: 2025-01-XX
