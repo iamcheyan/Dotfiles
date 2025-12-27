@@ -5,6 +5,9 @@
 # 字体安装功能
 # ============================================
 
+# 移除可能存在的别名（避免与函数定义冲突）
+unalias install:font 2>/dev/null || true
+
 # 字体安装函数（可通过命令调用）
 install:font() {
     bash "$HOME/.dotfiles/scripts/system/install_font.sh" "$@"
