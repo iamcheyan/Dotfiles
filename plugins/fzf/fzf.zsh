@@ -90,9 +90,9 @@ ff() {
             # 参数全部合并成字符串，直接作为查询内容传递（支持所有特殊字符）
             local query
             query="$*"
-            target=$("${search_cmd[@]}" 2>/dev/null | command fzf --query="${query}")
+            target=$("${search_cmd[@]}" 2>/dev/null | command fzf --bind 'tab:down' --bind 'btab:up' --query="${query}")
         else
-            target=$("${search_cmd[@]}" 2>/dev/null | command fzf)
+            target=$("${search_cmd[@]}" 2>/dev/null | command fzf --bind 'tab:down' --bind 'btab:up')
         fi
         if [[ -n "$target" ]]; then
             if [[ -f "$target" ]]; then
@@ -123,6 +123,7 @@ rf() {
     if [[ -n "$initial_query" ]]; then
         sel=$(rg --line-number --no-heading --color=always -- "$initial_query" . | \
             command fzf --ansi \
+                --bind 'tab:down' --bind 'btab:up' \
                 --delimiter ':' \
                 --prompt "RG (cwd: $(pwd))> " \
                 --preview 'bat --style=numbers --color=always {1} --highlight-line {2}' \
@@ -130,6 +131,7 @@ rf() {
     else
         sel=$(rg --line-number --no-heading --color=always . | \
             command fzf --ansi \
+                --bind 'tab:down' --bind 'btab:up' \
                 --delimiter ':' \
                 --prompt "RG (cwd: $(pwd))> " \
                 --preview 'bat --style=numbers --color=always {1} --highlight-line {2}' \
@@ -149,7 +151,7 @@ rf() {
 # 使用 zoxide 结合 fzf 交互式选择目录（不显示右侧预览）并切换
 zd() {
     local dir
-    dir=$(zoxide query -l | fzf --prompt="zoxide directory> " --no-preview)
+    dir=$(zoxide query -l | fzf --bind 'tab:down' --bind 'btab:up' --prompt="zoxide directory> " --no-preview)
     [[ -n "$dir" ]] && cd "$dir"
 }
 
@@ -159,7 +161,7 @@ zc() {
     # 从历史中去重列出最近的命令，并用 fzf 交互选择（移除右侧的预览）
     cmd=$(
         fc -rl 1 | awk '{$1=""; print substr($0,2)}' | awk '!a[$0]++' |
-        fzf --prompt="Recent Command> " --no-preview
+        fzf --bind 'tab:down' --bind 'btab:up' --prompt="Recent Command> " --no-preview
     )
     [[ -n "$cmd" ]] && print -z -- "$cmd"
 }
