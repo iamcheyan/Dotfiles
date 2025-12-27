@@ -145,15 +145,23 @@ install_zinit() {
     fi
 }
 
-# 创建 Dotfiles 软链接
+# 创建 Dotfiles 软链接（确保 ~/.dotfiles 指向 ~/Dotfiles）
+# 注意：~/Dotfiles 是真实目录，~/.dotfiles 是软链接
 create_dotfiles_link() {
-    local dotfiles_link="$HOME/Dotfiles"
-    local dotfiles_dir="${DOTFILES_DIR:-$HOME/.dotfiles}"
+    local dotfiles_real="$HOME/Dotfiles"
+    local dotfiles_link="$HOME/.dotfiles"
 
+    # 如果 ~/Dotfiles 不存在，说明仓库不在标准位置，跳过此步骤
+    if [[ ! -d "$dotfiles_real" ]]; then
+        print_warning "~/Dotfiles 目录不存在，跳过软链接创建"
+        return 0
+    fi
+
+    # 检查 ~/.dotfiles 是否已存在且指向正确
     if [[ -L "$dotfiles_link" ]]; then
         local current_target=$(readlink -f "$dotfiles_link")
-        if [[ "$current_target" == "$dotfiles_dir" ]]; then
-            print_success "软链接已存在: $dotfiles_link -> $dotfiles_dir"
+        if [[ "$current_target" == "$dotfiles_real" ]]; then
+            print_success "软链接已存在: $dotfiles_link -> $dotfiles_real"
             return 0
         else
             print_warning "软链接指向不同目标: $dotfiles_link -> $current_target"
@@ -167,17 +175,21 @@ create_dotfiles_link() {
         fi
     elif [[ -e "$dotfiles_link" ]]; then
         print_warning "$dotfiles_link 已存在但不是软链接"
-        read -p "是否要删除并创建软链接? (y/N): " -n 1 -r
+        read -p "是否要备份并创建软链接? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            rm -rf "$dotfiles_link"
+            local backup_file="${dotfiles_link}.backup.$(date +%Y%m%d_%H%M%S)"
+            mv "$dotfiles_link" "$backup_file"
+            print_info "已备份到: $backup_file"
         else
+            print_warning "跳过软链接创建"
             return 0
         fi
     fi
 
-    if ln -s "$dotfiles_dir" "$dotfiles_link" 2>/dev/null; then
-        print_success "已创建软链接: $dotfiles_link -> $dotfiles_dir"
+    # 创建 ~/.dotfiles -> ~/Dotfiles 的软链接
+    if ln -s "$dotfiles_real" "$dotfiles_link" 2>/dev/null; then
+        print_success "已创建软链接: $dotfiles_link -> $dotfiles_real"
     else
         print_error "创建软链接失败"
         return 1
@@ -245,67 +257,129 @@ create_zshrc_link() {
 }
 
 # 检测并设置 dotfiles 目录
+# 注意：~/Dotfiles 是真实目录，~/.dotfiles 是软链接
 detect_dotfiles_dir() {
     local current_dir="$(pwd)"
-    local dotfiles_dir=""
+    local dotfiles_real=""
+    local dotfiles_link="$HOME/.dotfiles"
     
-    # 检查当前目录是否是 dotfiles 仓库
-    if [[ -f "$current_dir/zshrc" ]] && [[ -f "$current_dir/init.sh" ]]; then
-        dotfiles_dir="$current_dir"
-        print_info "检测到 dotfiles 仓库在: $dotfiles_dir"
+    # 优先检查 ~/Dotfiles（真实目录）
+    if [[ -d "$HOME/Dotfiles" ]] && [[ -f "$HOME/Dotfiles/zshrc" ]]; then
+        dotfiles_real="$HOME/Dotfiles"
+        print_info "检测到 dotfiles 真实目录: $dotfiles_real"
         
-        # 如果当前目录是 ~/Dotfiles，需要创建 ~/.dotfiles 软链接
-        if [[ "$dotfiles_dir" == "$HOME/Dotfiles" ]]; then
-            if [[ ! -e "$HOME/.dotfiles" ]]; then
-                print_info "正在创建 ~/.dotfiles 软链接..."
-                if ln -s "$HOME/Dotfiles" "$HOME/.dotfiles" 2>/dev/null; then
+        # 确保 ~/.dotfiles 软链接指向 ~/Dotfiles
+        if [[ ! -e "$dotfiles_link" ]]; then
+            print_info "正在创建 ~/.dotfiles 软链接..."
+            if ln -s "$dotfiles_real" "$dotfiles_link" 2>/dev/null; then
+                print_success "已创建软链接: ~/.dotfiles -> ~/Dotfiles"
+            else
+                print_error "创建软链接失败"
+                return 1
+            fi
+        elif [[ -L "$dotfiles_link" ]]; then
+            local target=$(readlink -f "$dotfiles_link")
+            if [[ "$target" == "$dotfiles_real" ]]; then
+                print_success "软链接已存在: ~/.dotfiles -> ~/Dotfiles"
+            else
+                print_warning "~/.dotfiles 软链接指向不同目标: $target"
+                print_info "预期目标: $dotfiles_real"
+                read -p "是否要重新创建软链接? (y/N): " -n 1 -r
+                echo
+                if [[ $REPLY =~ ^[Yy]$ ]]; then
+                    rm -f "$dotfiles_link"
+                    if ln -s "$dotfiles_real" "$dotfiles_link" 2>/dev/null; then
+                        print_success "已重新创建软链接: ~/.dotfiles -> ~/Dotfiles"
+                    else
+                        print_error "重新创建软链接失败"
+                        return 1
+                    fi
+                fi
+            fi
+        elif [[ -d "$dotfiles_link" ]]; then
+            print_warning "~/.dotfiles 已存在但是目录（不是软链接）"
+            print_info "如果 ~/Dotfiles 是真实目录，应该删除 ~/.dotfiles 并创建软链接"
+            read -p "是否要备份 ~/.dotfiles 并创建软链接? (y/N): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                local backup_file="${dotfiles_link}.backup.$(date +%Y%m%d_%H%M%S)"
+                mv "$dotfiles_link" "$backup_file"
+                print_info "已备份到: $backup_file"
+                if ln -s "$dotfiles_real" "$dotfiles_link" 2>/dev/null; then
                     print_success "已创建软链接: ~/.dotfiles -> ~/Dotfiles"
                 else
                     print_error "创建软链接失败"
                     return 1
                 fi
-            elif [[ -L "$HOME/.dotfiles" ]]; then
-                local target=$(readlink -f "$HOME/.dotfiles")
-                if [[ "$target" == "$HOME/Dotfiles" ]]; then
-                    print_success "软链接已存在: ~/.dotfiles -> ~/Dotfiles"
+            fi
+        fi
+    # 如果当前目录是 dotfiles 仓库（但不是 ~/Dotfiles）
+    elif [[ -f "$current_dir/zshrc" ]] && [[ -f "$current_dir/init.sh" ]]; then
+        dotfiles_real="$current_dir"
+        print_info "检测到 dotfiles 仓库在: $dotfiles_real"
+        
+        # 如果当前目录不是 ~/Dotfiles，询问是否要创建软链接
+        if [[ "$dotfiles_real" != "$HOME/Dotfiles" ]]; then
+            print_info "当前目录不是 ~/Dotfiles，是否要创建软链接?"
+            print_info "  选项 1: 创建 ~/.dotfiles -> $dotfiles_real"
+            print_info "  选项 2: 创建 ~/Dotfiles -> $dotfiles_real（然后 ~/.dotfiles -> ~/Dotfiles）"
+            read -p "选择选项 (1/2/N，跳过): " -n 1 -r
+            echo
+            if [[ $REPLY == "1" ]]; then
+                if [[ -e "$dotfiles_link" ]]; then
+                    print_warning "~/.dotfiles 已存在，需要先删除"
+                    read -p "是否继续? (y/N): " -n 1 -r
+                    echo
+                    if [[ $REPLY =~ ^[Yy]$ ]]; then
+                        rm -rf "$dotfiles_link"
+                    else
+                        return 1
+                    fi
+                fi
+                if ln -s "$dotfiles_real" "$dotfiles_link" 2>/dev/null; then
+                    print_success "已创建软链接: ~/.dotfiles -> $dotfiles_real"
                 else
-                    print_warning "~/.dotfiles 软链接指向不同目标: $target"
+                    print_error "创建软链接失败"
+                    return 1
+                fi
+            elif [[ $REPLY == "2" ]]; then
+                if [[ ! -e "$HOME/Dotfiles" ]]; then
+                    if ln -s "$dotfiles_real" "$HOME/Dotfiles" 2>/dev/null; then
+                        print_success "已创建软链接: ~/Dotfiles -> $dotfiles_real"
+                        dotfiles_real="$HOME/Dotfiles"
+                    else
+                        print_error "创建软链接失败"
+                        return 1
+                    fi
+                fi
+                # 然后创建 ~/.dotfiles -> ~/Dotfiles
+                if [[ ! -e "$dotfiles_link" ]]; then
+                    if ln -s "$HOME/Dotfiles" "$dotfiles_link" 2>/dev/null; then
+                        print_success "已创建软链接: ~/.dotfiles -> ~/Dotfiles"
+                    else
+                        print_error "创建软链接失败"
+                        return 1
+                    fi
                 fi
             fi
         fi
     fi
     
-    # 检查 ~/.dotfiles 是否存在
-    if [[ -e "$HOME/.dotfiles" ]]; then
-        if [[ -L "$HOME/.dotfiles" ]]; then
-            dotfiles_dir=$(readlink -f "$HOME/.dotfiles")
-        else
-            dotfiles_dir="$HOME/.dotfiles"
-        fi
-    fi
-    
-    # 如果还是没找到，尝试从当前目录创建软链接
-    if [[ -z "$dotfiles_dir" ]] && [[ -f "$current_dir/zshrc" ]] && [[ -f "$current_dir/init.sh" ]]; then
-        print_info "正在创建 ~/.dotfiles 软链接指向当前目录..."
-        if ln -s "$current_dir" "$HOME/.dotfiles" 2>/dev/null; then
-            dotfiles_dir="$HOME/.dotfiles"
-            print_success "已创建软链接: ~/.dotfiles -> $current_dir"
-        else
-            print_error "创建软链接失败"
-            return 1
-        fi
-    fi
-    
-    # 最终检查
-    if [[ -z "$dotfiles_dir" ]] || [[ ! -f "$HOME/.dotfiles/zshrc" ]]; then
-        print_error "未找到 dotfiles 仓库"
+    # 最终检查 ~/.dotfiles 是否存在且可访问
+    if [[ ! -e "$dotfiles_link" ]]; then
+        print_error "未找到 ~/.dotfiles"
         print_info "请确保："
         print_info "  1. 在 dotfiles 仓库目录中运行此脚本，或"
-        print_info "  2. 已克隆仓库到 ~/.dotfiles 或 ~/Dotfiles"
+        print_info "  2. 已克隆仓库到 ~/Dotfiles 或当前目录"
         return 1
     fi
     
-    export DOTFILES_DIR="$HOME/.dotfiles"
+    if [[ ! -f "$dotfiles_link/zshrc" ]]; then
+        print_error "~/.dotfiles/zshrc 不存在"
+        return 1
+    fi
+    
+    export DOTFILES_DIR="$dotfiles_link"
     print_success "Dotfiles 目录: $DOTFILES_DIR"
     return 0
 }

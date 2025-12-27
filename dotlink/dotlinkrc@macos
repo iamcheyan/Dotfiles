@@ -15,6 +15,9 @@ $HOME/.dotfiles/config/nvim:$HOME/.config/nvim	# Neovim 配置文件
 $HOME/.dotfiles/config/yazi:$HOME/.config/yazi	# Yazi 文件管理器配置
 $HOME/.dotfiles/config/karabiner:$HOME/.config/karabiner	# Karabiner 配置文件
 
+# Rime 配置文件
+$HOME/.dotfiles/rime:$HOME/Library/Rime         # MacOS Rime 配置文件
+
 [backups]
 # $HOME/.ssh:$HOME/.dotfiles/backups/sshp  # 已移动到 sensitive/
 
