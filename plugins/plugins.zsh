@@ -1,3 +1,6 @@
+# 启用 AUTO_CD：输入目录路径时自动 cd
+setopt AUTO_CD
+
 # autosuggestions
 zinit light zsh-users/zsh-autosuggestions
 

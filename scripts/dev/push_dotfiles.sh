@@ -27,37 +27,6 @@ elif [ "$(git remote get-url origin)" != "$REMOTE_URL" ]; then
     git remote set-url origin "$REMOTE_URL"
 fi
 
-# 获取当前 IP 地址（尝试多种方法）
-get_ip() {
-    local ip=""
-    
-    # 方法1: 使用 curl 获取公网 IP
-    if command -v curl >/dev/null 2>&1; then
-        ip=$(curl -s --max-time 3 https://ifconfig.me 2>/dev/null || \
-             curl -s --max-time 3 https://api.ipify.org 2>/dev/null || \
-             curl -s --max-time 3 https://icanhazip.com 2>/dev/null)
-    fi
-    
-    # 方法2: 使用 wget 获取公网 IP
-    if [ -z "$ip" ] && command -v wget >/dev/null 2>&1; then
-        ip=$(wget -qO- --timeout=3 https://ifconfig.me 2>/dev/null || \
-             wget -qO- --timeout=3 https://api.ipify.org 2>/dev/null)
-    fi
-    
-    # 方法3: 获取本地 IP（如果公网 IP 获取失败）
-    if [ -z "$ip" ]; then
-        if command -v hostname >/dev/null 2>&1; then
-            ip=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")
-        fi
-        if [ -z "$ip" ] && command -v ip >/dev/null 2>&1; then
-            ip=$(ip route get 8.8.8.8 2>/dev/null | grep -oP 'src \K\S+' || echo "")
-        fi
-    fi
-    
-    # 如果还是获取不到，使用默认值
-    echo "${ip:-unknown}"
-}
-
 # 获取设备名
 get_hostname() {
     if command -v hostname >/dev/null 2>&1; then
@@ -67,26 +36,24 @@ get_hostname() {
     fi
 }
 
-# 生成时间戳
+# 生成时间戳（格式：YYYY-MM-DD HH:MM:SS）
 get_timestamp() {
-    date '+%Y-%m-%d %H:%M:%S %Z'
+    date '+%Y-%m-%d %H:%M:%S'
 }
 
 # 获取信息
-IP=$(get_ip)
 HOSTNAME=$(get_hostname)
 TIMESTAMP=$(get_timestamp)
 COMMIT_PREFIX="${1:-Update}"
 
-# 构建提交信息
-COMMIT_MSG="${COMMIT_PREFIX} | IP: ${IP} | Device: ${HOSTNAME} | Time: ${TIMESTAMP}"
+# 构建提交信息：Update: Tetsuya-Apple-M1-Max.local - 2025-12-27 20:05:37
+COMMIT_MSG="${COMMIT_PREFIX}: ${HOSTNAME} - ${TIMESTAMP}"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  准备推送 dotfiles 到 GitHub"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "提交信息: $COMMIT_MSG"
-echo "IP 地址: $IP"
 echo "设备名: $HOSTNAME"
 echo "时间戳: $TIMESTAMP"
 echo ""
