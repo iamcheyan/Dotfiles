@@ -26,4 +26,7 @@ $HOME/.dotfiles/config/superfile:$HOME/.config/superfile                  #super
 # Rime 配置文件
 $HOME/.dotfiles/rime:$HOME/.config/ibus/rime	                           # ibus 
 $HOME/.dotfiles/rime:$HOME/.var/app/org.fcitx.Fcitx5/data/fcitx5/rime   # flatpak fcitx5 
-$HOME/.dotfiles/rime:$HOME/.local/share/fcitx5/rime                     # fcitx5
+$HOME/.dotfiles/rime:$HOME/.local/share/fcitx5/rime                     # fcitx5 
+
+$HOME/.dotfiles/config/sway:$HOME/.config/sway	                        # sway 配置文件目录
+$HOME/.dotfiles/config/sway/waybar:$HOME/.config/waybar	                # waybar 配置文件

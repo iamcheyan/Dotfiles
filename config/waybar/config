@@ -83,8 +83,8 @@
     "format-icons": ["󰁹", "󰂆", "󰂈", "󰂉", "󰂊", "󰁹"]
   },
   "tray": {
-    "icon-size": 15,
-    "spacing": 5,
+    "icon-size": 16,
+    "spacing": 4,
   },
   "network": {
     "interval": 1,

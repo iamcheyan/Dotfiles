@@ -1,13 +1,12 @@
 * {
   font-family:  monospace;
-  font-size: 11px;
+  font-size: 10px;
 }
 window#waybar {
   color: #c0caf5;
   background-color: rgba(0, 0, 0, 0.8);
   transition-duration: 0.5s;
   transition-property: background-color;
-  font-size: 10px;
 }
 #workspaces button {
   color: #c0caf5;
@@ -47,6 +46,7 @@ window#waybar {
 #battery,
 #mode {
   margin: 0px 2px;   /* gaps between modules */
+  padding: 0px 4px;   /* 减少 padding 以适应 22px 高度 */
   color: #c0caf5;
   border-bottom: 1px solid #414868;
 }
