@@ -5,9 +5,9 @@
 window#waybar {
   color: #c0caf5;
   background-color: rgba(0, 0, 0, 0.8);
-  border-bottom: 1px solid #414868;
   transition-duration: 0.5s;
   transition-property: background-color;
+  font-size: 10px;
 }
 #workspaces button {
   color: #c0caf5;
