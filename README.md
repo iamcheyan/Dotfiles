@@ -314,7 +314,3 @@ alias command:name="bash ${HOME}/.dotfiles/path/to/script.sh"
 - 某些工具需要特定依赖（如 Python、特定命令）
 - 字体安装脚本会在首次启动时询问
 - 所有工具都支持 `--help` 或查看脚本注释获取帮助
-
----
-
-**最后更新**: 2025-01-XX
