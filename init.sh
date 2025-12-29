@@ -234,6 +234,7 @@ create_zshrc_link() {
         else
             print_warning ".zshrc 软链接指向不同目标: $current_target"
             print_info "预期目标: $zshrc_source_abs"
+        fi
     elif [[ -f "$zshrc_target" ]]; then
         print_warning ".zshrc 已存在，是否要备份并创建软链接?"
         read -p "备份现有 .zshrc 并创建软链接? (y/N): " -n 1 -r
