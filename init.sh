@@ -593,11 +593,38 @@ main() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
 
-    # 询问是否立即切换到 zsh
+    # 询问是否立即切换到 zsh 并设置为默认 shell
     if command_exists zsh && [[ "$SHELL" != "$(command -v zsh)" ]]; then
-        read -p "是否要立即切换到 zsh? (y/N): " -n 1 -r
+        read -p "是否要立即切换到 zsh 并设置为默认 shell? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
+            ZSH_PATH=$(command -v zsh)
+            print_info "正在将 zsh 设置为默认 shell..."
+            
+            # 检查 zsh 是否在 /etc/shells 中
+            if ! grep -Fxq "$ZSH_PATH" /etc/shells 2>/dev/null; then
+                print_warning "zsh 不在 /etc/shells 中，可能需要管理员权限添加"
+                if command_exists sudo; then
+                    echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
+                    print_success "已将 zsh 添加到 /etc/shells"
+                else
+                    print_warning "无法自动添加 zsh 到 /etc/shells，请手动添加："
+                    echo "  sudo echo '$ZSH_PATH' >> /etc/shells"
+                fi
+            fi
+            
+            # 设置 zsh 为默认 shell
+            if command_exists chsh; then
+                if chsh -s "$ZSH_PATH" 2>/dev/null; then
+                    print_success "已将 zsh 设置为默认 shell"
+                else
+                    print_warning "设置默认 shell 失败，可能需要输入密码"
+                    print_info "请手动运行: chsh -s $ZSH_PATH"
+                fi
+            else
+                print_warning "未找到 chsh 命令，无法设置默认 shell"
+            fi
+            
             print_info "正在切换到 zsh..."
             exec zsh
         fi
