@@ -7,7 +7,7 @@
 - 🚀 **Neovim (LazyVim)**：功能强大的现代化终端 IDE，已预装主流语言支持。
 - 🛠 **现代化工具链**：自动集成 Rust 生态的命令行工具（bat, rg, fzf...）与开发专用字体。
 
-告别繁琐的配置折腾，专注于代码本身。
+告别繁琐的配置折腾，专注于Coding本身。
 
 ## 安装
 
@@ -17,15 +17,18 @@ cd ~/Dotfiles
 bash init.sh
 ```
 
-安装完成后：
+提示：
 - **备份功能**：如果 `init.sh` 检测到现有的用户配置（非软链接），会自动备份到 `~/.dotfiles_backup_<时间戳>` 目录。
 - **首次初始化**：切换到 `zsh` 时会自动拉取 Powerlevel10k 与所有 Zsh 插件，请耐心等待。
-- Neovim 配置已就绪（LazyVim），如需安装 Neovim 可运行 `install:nvim`
-- 如需字体可运行 `install:font`
+- **Zsh 交互**：默认启用 Vim 模式。
+    - 按 `ESC` 进入普通模式
+    - 按 `i` 或 `a` 等键进入插入模式
+- Neovim 配置已就绪（LazyVim），会自动安装配进行配置。
+- 相关的开源字体已就绪，无需额外安装。
 
 ## 安装后续步骤与依赖
 
-### Neovim
+### Neovim 自动安装
 安装命令：
 ```bash
 install:nvim
@@ -39,7 +42,7 @@ install:nvim --version 0.9.5
 - Arch: `base-devel pkg-config cmake unzip`
 - macOS: `xcode-select --install` + `brew install pkg-config cmake`
 
-### 字体
+### 字体 自动安装
 安装命令：
 ```bash
 install:font
