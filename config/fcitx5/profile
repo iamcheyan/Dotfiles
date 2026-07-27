@@ -1,14 +1,14 @@
 [Groups/0]
 # Group Name
-Name=デフォルト
+Name=默认
 # Layout
-Default Layout=jp
+Default Layout=us
 # Default Input Method
 DefaultIM=rime
 
 [Groups/0/Items/0]
 # Name
-Name=keyboard-jp
+Name=keyboard-us
 # Layout
 Layout=
 
@@ -19,5 +19,5 @@ Name=rime
 Layout=
 
 [GroupOrder]
-0=デフォルト
+0=默认
 

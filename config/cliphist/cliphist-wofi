@@ -1,0 +1,72 @@
+#!/bin/sh
+# cliphist-wofi — clipboard history picker (toggle)
+# • Win+V: show/hide toggle
+# • Truncated text with … indicator
+export GDK_BACKEND=wayland
+export PATH="${GOENV_ROOT:-$HOME/.goenv}/shims:$PATH"
+
+# Toggle
+if pgrep -f "wofi --dmenu.*Search clipboard" >/dev/null 2>&1; then
+	pkill -f "wofi --dmenu.*Search clipboard"
+	exit 0
+fi
+
+MAX_LEN=72
+
+entries=$(cliphist list)
+[ -z "$entries" ] && notify-send -u low "Clipboard" "History is empty" && exit 0
+
+fmt_file=$(mktemp)
+orig_file=$(mktemp)
+
+echo "$entries" | awk -F'\t' -v FMT="$fmt_file" -v ORIG="$orig_file" -v MAX="$MAX_LEN" '
+{
+    num = $1
+    content = $0
+    sub(/^[^\t]*\t/, "", content)
+
+    if (content ~ /^\[\[ binary data .* \]\]$/) {
+        size = content
+        gsub(/^\[\[ binary data /, "", size)
+        gsub(/ \]\]$/, "", size)
+        printf "  [image %s]\n", size >> FMT
+    } else {
+        display = content
+        sub(/\n.*/, "", display)
+        if (length(display) > MAX + 1) {
+            display = substr(display, 1, MAX) "…"
+        }
+        printf "  %s\n", display >> FMT
+    }
+    print $0 >> ORIG
+}
+END { close(FMT); close(ORIG) }
+'
+
+# Position: center
+chosen=$(wofi --dmenu \
+	-s "$HOME/.config/TWM/wofi/cliphist.css" \
+	-c /dev/null \
+	-l center \
+	-W 800 \
+	-H 600 \
+	-p "  Search clipboard..." \
+	-i \
+	-I <"$fmt_file")
+
+[ -z "$chosen" ] && rm -f "$fmt_file" "$orig_file" && exit 0
+
+chosen_line=$(grep -n -m1 -xF "$chosen" "$fmt_file" | cut -d: -f1)
+rm -f "$fmt_file"
+
+[ -z "$chosen_line" ] && rm -f "$orig_file" && exit 0
+
+original=$(sed -n "${chosen_line}p" "$orig_file")
+rm -f "$orig_file"
+
+[ -z "$original" ] && exit 0
+
+echo "$original" | cliphist decode | wl-copy
+echo "$original" | cliphist delete
+sleep 0.25
+wtype -M Ctrl v -m Ctrl

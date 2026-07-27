@@ -31,6 +31,7 @@ kiro      # Kiro CLI
 | `mimo` | `mimo.sh` | `mimo` | `mimo -c --dangerously-skip-permissions` |
 | `oc` | `opencode.sh` | `opencode` | `opencode -c --dangerously-skip-permissions` |
 | `copilot` | `copilot.sh` | `copilot` | `copilot` |
+| `cur` | `cursor.sh` | `cursor` | `cursor` |
 | `kiro` | `kiro.sh` | `kiro-cli` | `kiro-cli` |
 
 ## 通用功能

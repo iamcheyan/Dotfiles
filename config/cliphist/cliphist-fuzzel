@@ -1,0 +1,72 @@
+#!/bin/sh
+# cliphist-fuzzel — clipboard history picker via fuzzel
+export GDK_BACKEND=wayland
+export PATH="${GOENV_ROOT:-$HOME/.goenv}/shims:$PATH"
+
+# Check fuzzel version for compatibility
+FUZZEL_VERSION=$(fuzzel --version 2>/dev/null | sed -n 's/.*version: \([0-9]*\.[0-9]*\).*/\1/p')
+FUZZEL_MAJOR=$(echo "$FUZZEL_VERSION" | cut -d. -f1)
+FUZZEL_MINOR=$(echo "$FUZZEL_VERSION" | cut -d. -f2)
+
+# Build fuzzel options based on version (supports --anchor and --margin since 1.10)
+FUZZEL_OPTS="--dmenu --width 80 --lines 20 --prompt '  Search: '"
+if [ "$FUZZEL_MAJOR" -gt 1 ] 2>/dev/null || { [ "$FUZZEL_MAJOR" -eq 1 ] 2>/dev/null && [ "$FUZZEL_MINOR" -ge 10 ] 2>/dev/null; }; then
+    FUZZEL_OPTS="$FUZZEL_OPTS --anchor top-right --y-margin 10 --x-margin 10"
+fi
+
+# Toggle
+if pgrep -f "fuzzel.*dmenu.*Clipboard" >/dev/null 2>&1; then
+	pkill -f "fuzzel.*dmenu.*Clipboard"
+	exit 0
+fi
+
+MAX_LEN=72
+
+entries=$(cliphist list)
+[ -z "$entries" ] && notify-send -u low "Clipboard" "History is empty" && exit 0
+
+fmt_file=$(mktemp)
+orig_file=$(mktemp)
+
+echo "$entries" | awk -F'\t' -v FMT="$fmt_file" -v ORIG="$orig_file" -v MAX="$MAX_LEN" '
+{
+    num = $1
+    content = $0
+    sub(/^[^\t]*\t/, "", content)
+
+    if (content ~ /^\[\[ binary data .* \]\]$/) {
+        size = content
+        gsub(/^\[\[ binary data /, "", size)
+        gsub(/ \]\]$/, "", size)
+        printf "  [image %s]\n", size >> FMT
+    } else {
+        display = content
+        sub(/\n.*/, "", display)
+        if (length(display) > MAX + 1) {
+            display = substr(display, 1, MAX) "…"
+        }
+        printf "  %s\n", display >> FMT
+    }
+    print $0 >> ORIG
+}
+END { close(FMT); close(ORIG) }
+'
+
+chosen=$(eval "fuzzel $FUZZEL_OPTS <\"$fmt_file\"")
+
+[ -z "$chosen" ] && rm -f "$fmt_file" "$orig_file" && exit 0
+
+chosen_line=$(grep -n -m1 -xF "$chosen" "$fmt_file" | cut -d: -f1)
+rm -f "$fmt_file"
+
+[ -z "$chosen_line" ] && rm -f "$orig_file" && exit 0
+
+original=$(sed -n "${chosen_line}p" "$orig_file")
+rm -f "$orig_file"
+
+[ -z "$original" ] && exit 0
+
+echo "$original" | cliphist decode | wl-copy
+echo "$original" | cliphist delete
+sleep 0.25
+wtype -M Ctrl v -m Ctrl
