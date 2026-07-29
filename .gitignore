@@ -232,7 +232,6 @@ a.out
 *.tmp
 *.bak
 *.cache
-Session.vim
 
 # ============================================
 # Chezmoi
