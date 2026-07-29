@@ -51,7 +51,7 @@ zsh
 | **历史搜索** | Atuin（Ctrl+R） |
 | **编辑器** | Neovim（lazy.nvim，自管配置） |
 | **文件管理** | Ranger（`r` 函数，见 aliases.conf） |
-| **终端多路复用** | Zellij |
+| **终端多路复用** | Tmux（tmux-persist + tmux-continuum 自动保存/恢复） |
 | **终端模拟器** | Kitty / Ghostty |
 
 ## 工具链替换
@@ -70,75 +70,56 @@ zsh
 
 ## AI Agent 集成
 
-我们提供了一键切换 AI Agent 账户的脚本，支持多个 AI 编码助手：
-
-### cc 脚本（Claude Code 启动器）
-
-Claude Code 的封装脚本，支持多 provider/model 切换、会话恢复、非交互模式等。
+统一的 AI coding agent 启动脚本，自动安装、自动配置，默认恢复上次会话并跳过审批。详见 `agent/README.md`。
 
 ```bash
-cc                          # 启动 Claude Code
-cc <provider>               # 使用指定 provider
-cc <provider> <model>       # 使用指定 provider + model
-cc -s                       # 交互式选择 model
-cc -c                       # 继续上次对话
-cc -r                       # 恢复历史对话
-cc -p "prompt"              # 非交互模式
+cx        # Codex (OpenAI)
+cc        # Claude Code (Anthropic)
+agy       # Antigravity (Google Gemini)
+grok      # Grok (xAI)
+omp       # Oh My Pi
+mypi      # Pi
+mimo      # MiMo Code
+oc        # OpenCode
+copilot   # GitHub Copilot
+cur       # Cursor Agent
+kiro      # Kiro CLI
+aq        # Agent quota/status 快照
 ```
 
-### cx 脚本（通用 Agent 切换）
-
-```bash
-cx              # 切换 Agent 账户
-cx --list       # 列出所有配置的账户
-```
-
-### 支持的 Agent
-
-| Agent | 说明 |
-|-------|------|
-| `app:claude-code` | Claude Code |
-| `app:opencode` | OpenCode |
-| `app:codex` | Codex |
-
-所有 Agent 通过统一的 API 接入，使用独立的 Node.js 版本隔离运行。
+所有 wrapper 无参数运行时默认行为：恢复上次会话 + 跳过权限确认。支持 `-f` 强制重装，未捕获的参数透传给底层 CLI。所有 agent 已适配 tmux-persist 会话恢复。
 
 ## Neovim 插件列表
 
-Neovim 配置现在直接基于 `lazy.nvim`，不再导入 LazyVim 发行版。保留的 LazyVim 风格快捷键已经迁移到本仓库的本地配置中。
+Neovim 配置直接基于 `lazy.nvim`，不导入 LazyVim 发行版。会话保存/恢复由 **auto-session** 插件处理（按 cwd 自动保存和恢复），不依赖 vim-obsession 或 Session.vim。
 
 | 插件 | 功能 |
 |------|------|
-| **aerial** | 代码大纲/导航（类似 VS Code 面包屑） |
-| **auto-session** | 自动保存/恢复会话 |
+| **aerial** | 代码大纲/符号导航 |
+| **auto-session** | 按 cwd 自动保存/恢复会话（tmux-persist 恢复 nvim 时依赖此插件） |
 | **blink.cmp** | 自动补全 |
 | **bufferline** | 顶部标签栏 |
 | **ccc** | 颜色预览/编辑器 |
+| **conform** | 代码格式化 |
 | **diffview** | Git diff 与文件历史 |
-| **dashboard** | 启动页面 |
-| **dev-visual** | 开发可视化工具 |
-| **disable-diagnostics** | 禁用诊断显示 |
 | **fidget** | LSP 进度提示 |
-| **flash** | 快速跳转（类似 Hop/Sneak） |
+| **flash** | 快速跳转 |
 | **gitsigns** | Git 增删改标记和 hunk 操作 |
 | **grug-far** | 全局搜索替换 |
 | **heirline** | 状态栏/窗口栏 |
-| **hlslens** | 搜索结果高亮和数量提示 |
-| **icons** | 图标支持 |
 | **indent-blankline** | 缩进引导线 |
-| **lsp-keymaps** | LSP 快捷键 |
-| **mason / mason-lspconfig** | LSP server 和 CLI 工具安装 |
+| **lsp / lsp-keymaps** | LSP 配置和快捷键 |
+| **mason / mason-lspconfig** | LSP server 安装 |
 | **mini.ai / mini.pairs** | 文本对象和成对符号 |
-| **neo-tree** | 文件浏览器 |
-| **oil** | 文件浏览器（轻量） |
-| **snacks** | picker、dashboard、terminal、toggle 等 UI 工具 |
-| **telescope** | 模糊搜索 |
-| **treesitter / treesitter-textobjects** | 语法高亮、折叠、缩进和语法对象 |
+| **neo-tree** | 文件浏览器（侧栏） |
+| **oil** | 文件浏览器（buffer 式编辑） |
+| **snacks** | picker、dashboard、notifier 等 UI 工具 |
+| **telescope** | 模糊搜索（配置文件查找 + yanky 剪贴板历史） |
+| **treesitter / treesitter-textobjects** | 语法高亮、折叠、缩进 |
 | **vim-visual-multi** | 多光标编辑 |
-| **vimquest** | 英语单词拼写与记忆小游戏插件 |
+| **vimquest** | 英语单词拼写练习 |
 | **which-key** | 快捷键提示 |
-| **yanky** | 复制/粘贴增强 |
-
+| **yanky** | 复制/粘贴增强（持久化剪贴板历史） |
 ## 目录结构
 
 ```

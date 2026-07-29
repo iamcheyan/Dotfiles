@@ -2,6 +2,8 @@
 
 统一的 AI coding agent 启动脚本，自动安装、自动配置，默认恢复上次会话并跳过审批。
 
+所有 agent 均已适配 tmux-persist 会话恢复：kill-server 重启后，每个 pane 自动恢复到对应 cwd 的最近会话。详见 `config/tmux/pre-restore-agents.sh`。
+
 ## 快速开始
 
 ```bash
@@ -10,8 +12,9 @@ cx        # Codex
 cc        # Claude Code
 agy       # Antigravity (Gemini)
 grok      # Grok
+omp       # Oh My Pi
 aq        # Agent quota/status snapshot
-pi        # Pi
+mypi      # Pi
 mimo      # MiMo Code
 oc        # OpenCode
 copilot   # GitHub Copilot
@@ -26,8 +29,9 @@ kiro      # Kiro CLI
 | `cc` | `claude-code.sh` | `claude` | `claude --dangerously-skip-permissions -c` |
 | `agy` | `antigravity.sh` | `agy` | `agy --continue --dangerously-skip-permissions` |
 | `grok` | `grok.sh` | `grok` | `grok --yolo --continue` |
-| `aq` | `agent-quota.sh` | `codex` / `agy` / `grok` | show quota/status snapshot |
-| `pi` | `pi.sh` | `pi` | `pi --continue` |
+| `aq` | `tools/agent-quota.sh` | `codex` / `agy` / `grok` | show quota/status snapshot |
+| `mypi` | `pi.sh` | `pi` | `pi --continue` |
+| `omp` | `omp.sh` | `omp` | `omp --continue` |
 | `mimo` | `mimo.sh` | `mimo` | `mimo -c --dangerously-skip-permissions` |
 | `oc` | `opencode.sh` | `opencode` | `opencode -c --dangerously-skip-permissions` |
 | `copilot` | `copilot.sh` | `copilot` | `copilot` |
@@ -194,7 +198,7 @@ head -70 ~/.local/bin/cx       # Codex 参考
 head -120 ~/.local/bin/cc      # Claude Code 参考
 head -40 ~/.local/bin/agy      # Antigravity 参考
 head -70 ~/.local/bin/grok     # Grok 参考
-head -80 $HOME/dotfiles/agent/agent-quota.sh  # Agent quota/status
+head -80 $HOME/dotfiles/tools/agent-quota.sh  # Agent quota/status
 head -80 ~/.local/bin/pi       # Pi 参考
 head -42 ~/.local/bin/mimo     # MiMo 参考
 head -100 ~/.local/bin/oc      # OpenCode 参考
@@ -207,7 +211,7 @@ head -20 $HOME/dotfiles/agent/kiro.sh     # Kiro 参考
 | 文件 | 用途 |
 |------|------|
 | `~/dotfiles/aliases.conf` | 所有别名定义（chezmoi 管理） |
-| `~/.config/opencode/opencode.json` | Provider / 模型配置（cc, oc 共用） |
+| `~/.config/opencode/opencode.json` | Provider / 模型配置（cc, oc 共用）；`ocfg` 命令编辑 |
 | `~/.codex/auth.json` | Codex 认证 |
 | `~/.codex/profiles/*.json` | Codex 多账号 profile |
 | `~/.config/opencode/antigravity-accounts.json` | Antigravity 多账号 |
