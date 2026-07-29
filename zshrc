@@ -41,6 +41,11 @@ fi
 # 核心工具集合：通过 zinit 安装命令行工具，并初始化 pyenv/direnv/atuin 等 shell 集成
 source ~/dotfiles/plugins/tools/tools.zsh
 
+# grok: PATH 和 fpath 必须在 compinit 之前设置，否则补全不生效
+# （原来 grok installer 在文件末尾跑了一次冗余 compinit，现在提前到此处避免重复）
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+
 # 补全系统：初始化 compinit、额外补全定义和 fzf-tab 补全界面
 source ~/dotfiles/plugins/completion/completion.zsh
 
@@ -151,11 +156,6 @@ v() {
 # mimocode
 export PATH="$HOME/.mimocode/bin:$PATH"
 
-# >>> grok installer >>>
-export PATH="$HOME/.grok/bin:$PATH"
-fpath=(~/.grok/completions/zsh $fpath)
-autoload -Uz compinit && compinit -C
-# <<< grok installer <<<
 
 # bun completions
 [[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
@@ -166,15 +166,7 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 # pi wrapper (points at user-installed pi-coding-agent, not /usr/bin/pi)
 export PATH="$HOME/.pi/bin:$PATH"
 
-# fnm
-FNM_PATH="/home/tetsuya/.fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="$FNM_PATH:$PATH"
-  eval "$(fnm env --shell zsh)"
-fi
-
-# Pi
-export PATH="/home/hkaku/.fnm/node-versions/v22.22.3/installation/bin:$PATH"
+# fnm lazy loader 已在 setup_fnm.sh (line 51) 中设置，这里不再重复初始化。
 
 # tmux-persist: Ctrl-d 退出 shell 前自动保存当前 session
 # 确保退出会话时 pane 内容和运行中的进程被快照捕获

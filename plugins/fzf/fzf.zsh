@@ -41,12 +41,16 @@ fi
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # 启用 fzf 官方键绑定（Ctrl+T / Alt+C / Ctrl+R）
-# 注意：这些会通过 zinit 从 GitHub 加载，但如果系统有安装也兼容
-if [[ -e /usr/share/fzf/key-bindings.zsh ]]; then
+# 系统安装的 fzf 在 /usr/share/fzf/shell/，zinit snippet 也有备份
+if [[ -e /usr/share/fzf/shell/key-bindings.zsh ]]; then
+    source /usr/share/fzf/shell/key-bindings.zsh
+elif [[ -e /usr/share/fzf/key-bindings.zsh ]]; then
     source /usr/share/fzf/key-bindings.zsh
 fi
 
-if [[ -e /usr/share/fzf/completion.zsh ]]; then
+if [[ -e /usr/share/fzf/shell/completion.zsh ]]; then
+    source /usr/share/fzf/shell/completion.zsh
+elif [[ -e /usr/share/fzf/completion.zsh ]]; then
     source /usr/share/fzf/completion.zsh
 fi
 
