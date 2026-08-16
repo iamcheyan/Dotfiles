@@ -42,13 +42,7 @@ choose_ssh_host() {
 		exit 1
 	fi
 
-	if command -v fczf >/dev/null 2>&1; then
-		selected="$(printf '%s\n' "$hosts" | fczf --preview '
-			ssh -G {} 2>/dev/null | grep -E "user|hostname|port"
-			echo "----"
-			ssh -o ConnectTimeout=1 {} "uptime" 2>/dev/null
-		' || true)"
-	elif command -v fzf >/dev/null 2>&1; then
+	if command -v fzf >/dev/null 2>&1; then
 		selected="$(
 			printf '%s\n' "$hosts" |
 				FZF_DEFAULT_OPTS= \

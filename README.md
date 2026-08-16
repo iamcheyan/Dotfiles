@@ -140,7 +140,7 @@ dotfiles/
 │   ├── fzf/              # fzf 配置与函数
 │   ├── zellij/           # Zellij 集成
 │   ├── yazi/             # Yazi 主题更新脚本
-│   └── sshfs/            # vifm-sshfs 脚本
+│   └── sshfs/            # vssh（fzf 选择 SSH 主机）与 vifm-sshfs 脚本
 ├── config/               # 应用配置（指向 ~/.config 下各应用）
 │   ├── nvim/             # Neovim (lazy.nvim self-managed)
 │   ├── ranger/           # Ranger 文件管理器
