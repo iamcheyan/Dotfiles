@@ -14,9 +14,7 @@ $HOME/dotfiles/config/starship/starship.toml:$HOME/.config/starship.toml	# Stars
 $HOME/dotfiles/config/nano/nanorc:$HOME/.nanorc	# GNU nano 配置文件
 $HOME/dotfiles/config/zellij:$HOME/.config/zellij	# Zellij 配置
 $HOME/dotfiles/config/atuin:$HOME/.config/atuin                          #atuin历史查询工具配置
-$HOME/dotfiles/config/kitty/kitty.conf:$HOME/.config/kitty/kitty.conf      #kitty终端配置
 $HOME/dotfiles/config/ghostty:$HOME/.config/ghostty                      #ghostty终端配置
-$HOME/dotfiles/config/alacritty:$HOME/.config/alacritty                  #alacritty终端配置
 $HOME/dotfiles/config/herdr/config.toml:$HOME/.config/herdr/config.toml				#herdr
 
 # env 凭据文件: 根目录 .env 软链接到 ~/.hermes/.env (Hermes 只读 ~/.hermes/.env)
@@ -36,11 +34,6 @@ $HOME/dotfiles/config/vifm/scripts:$HOME/.config/vifm/scripts
 
 # tmux
 $HOME/dotfiles/config/tmux/tmux.conf:$HOME/.tmux.conf
-
-# fcitx5
-$HOME/dotfiles/config/fcitx5/config:$HOME/.config/fcitx5/config
-$HOME/dotfiles/config/fcitx5/conf/classicui.conf:$HOME/.config/fcitx5/conf/classicui.conf
-$HOME/dotfiles/config/fcitx5/profile:$HOME/.config/fcitx5/profile
 
 #[link:macos]
 #MacOS 配置可以单独写在这里
