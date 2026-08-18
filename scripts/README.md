@@ -1,46 +1,25 @@
 # Scripts 目录说明
 
+本目录只保留**被引用**的脚本。未被引用的脚本已迁至 chezmoi 管理：`~/.config/scripts/dotfiles-migrated/`（源：`~/chezmoi/dot_config/scripts/dotfiles-migrated/`）。
+
 ## 目录结构
 
 ```
 scripts/
-├── install/     # 工具安装脚本
-├── setup/       # 环境配置脚本
-├── translate/   # 翻译工具
+├── install/     # init.sh 调用的安装脚本
+├── setup/       # shell 运行时 source 的配置脚本
 └── README.md
 ```
 
 ### `scripts/install/` - 工具安装脚本
 
-用于安装各种 CLI 工具和软件。
-
-- `install_codex.sh` - 安装 Codex
-- `install_deja.sh` - 安装 Deja
-- `install_fnm.sh` - 安装 fnm
-- `install_font.sh` - 安装字体
-- `install_fzf.sh` - 安装 fzf
-- `install_gemini.sh` - 安装 Gemini
-- `install_httpie.sh` - 安装 HTTPie
-- `install_nvim.sh` - 安装 Neovim
-- `install_opencode.sh` - 安装 Opencode
-- `install_sbzr.sh` - 安装 Sbzr
-- `install_treesitter.sh` - 安装 Tree-sitter
-- `install_zellij.sh` - 安装 Zellij
-- `firefox_theme_install.sh` - Firefox 主题安装
-- `lib/npmrc_cleanup.sh` - npmrc 清理辅助脚本
+- `install_font.sh` - 安装字体（init.sh `install_fonts` 调用）
+- `install_httpie.sh` - 安装 HTTPie（plugins/tools/tools.zsh 调用）
+- `install_nvim.sh` - 安装 Neovim（init.sh `install_neovim` 调用）
+- `install_zellij.sh` - 安装 Zellij（init.sh `install_extra_tools` 调用）
 
 ### `scripts/setup/` - 环境配置脚本
 
-用于配置开发环境和系统设置。
-
 - `setup_fnm.sh` - fnm lazy loader（zshrc 中 source）
-- `setup_github.sh` - GitHub 配置
-- `setup_node.sh` - Node.js 环境配置
-- `setup_npm_globals.sh` - npm 全局包安装
-- `setup_nopasswd_sudo.sh` - 免密 sudo 配置
-- `setup_ssh_key.sh` - SSH 密钥配置
-- `setup_ssh_server.sh` - SSH 服务器安装配置
 
-### `scripts/translate/` - 翻译工具
-
-- `translate.py` - 翻译脚本
+> fnm/fzf 的安装逻辑在 init.sh 内联（`install_fnm`/`install_fzf` 函数），不依赖独立脚本。

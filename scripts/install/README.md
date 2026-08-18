@@ -64,118 +64,6 @@ install:nvim --version 0.11.4   # 安装指定版本
 
 ---
 
-### 3. `install_fnm.sh` - fnm (Fast Node Manager) 安装脚本
-
-**功能：**
-- 安装 fnm (Fast Node Manager)，用于管理 Node.js 版本
-- 自动安装 Node.js 和 npm 全局工具
-- 支持检测已安装的 fnm
-
-**用法：**
-```bash
-install:fnm           # 安装 fnm + Node.js + npm 全局工具
-install:fnm --force    # 强制重新安装
-```
-
-**别名：**
-- `install:fnm` - 通过 `aliases.conf` 定义
-
-**特点：**
-- 自动检测 fnm 安装状态
-- 安装后自动链式执行 setup_node.sh 和 setup_npm_globals.sh
-- 支持 --force 参数强制重新安装
-
-**安装位置：**
-- `~/.fnm`
-
-**后续步骤：**
-安装后需要：
-1. 重新加载 shell: `source ~/.zshrc` 或 `source ~/.bashrc`
-2. 验证安装: `command -v fnm`
-
----
-
-### 4. `install_treesitter.sh` - tree-sitter-cli 安装脚本
-
-**功能：**
-- 使用 Rust cargo 安装 tree-sitter-cli
-- 解决 GLIBC 版本问题（针对当前系统编译）
-- 自动安装 Rust 和 clang（如果未安装）
-- 自动删除 npm 版本的 tree-sitter（避免冲突）
-
-**用法：**
-```bash
-install:treesitter           # 安装 tree-sitter-cli
-install:treesitter --force   # 强制重新安装
-```
-
-**别名：**
-- `install:treesitter` - 通过 `aliases.conf` 定义
-
-**特点：**
-- 仅支持 Linux 系统
-- 自动检测架构（x86_64、aarch64）
-- 自动安装依赖（Rust、clang）
-- 自动删除冲突的 npm 版本
-- 彩色输出和进度提示
-
-**安装位置：**
-- `~/.cargo/bin/tree-sitter`
-
-**依赖：**
-- `curl` - 用于下载 Rust 安装脚本
-- `apt-get` - 用于安装 clang（Ubuntu/Debian）
-- 网络连接 - 用于下载 Rust 和编译依赖
-
-**后续步骤：**
-安装后在 Neovim 中运行 `:checkhealth nvim-treesitter` 验证。
-
----
-
-### 5. `install_fzf.sh` - fzf (Fuzzy Finder) 安装脚本
-
-**功能：**
-- 从 GitHub 仓库克隆并安装最新版本的 fzf
-- 支持安装二进制文件、键绑定和补全文件
-- 自动配置 shell 环境（zsh/bash）
-
-**用法：**
-```bash
-install:fzf                    # 安装 fzf（默认只安装二进制文件）
-install:fzf --force            # 强制重新安装
-install:fzf --all              # 安装所有组件（二进制、键绑定、补全）
-install:fzf --bin              # 只安装二进制文件（默认）
-install:fzf --key-bindings     # 只安装键绑定
-install:fzf --completion       # 只安装补全文件
-```
-
-**别名：**
-- `install:fzf` - 通过 `aliases.conf` 定义
-
-**特点：**
-- 从 GitHub 仓库直接克隆最新版本
-- 自动检测 shell 类型（zsh/bash）
-- 自动配置 shell 配置文件（~/.zshrc 或 ~/.bashrc）
-- 支持多种安装选项
-- 检查已安装状态，避免重复安装
-- 如果需要编译，自动检测 Go 和 make
-
-**安装位置：**
-- `~/.fzf` - 主目录
-- `~/.fzf/bin/fzf` - 二进制文件
-
-**依赖：**
-- `git` - 用于克隆仓库（必需）
-- `make` 和 `go` - 如果需要编译二进制文件（可选）
-
-**后续步骤：**
-安装后需要：
-1. 重新加载 shell: `source ~/.zshrc` 或 `source ~/.bashrc`
-2. 验证安装: `fzf --version`
-3. 使用 fzf: `ls | fzf` 或直接运行 `fzf`
-
----
-
 ### 6. `install_httpie.sh` - HTTPie 安装脚本
 
 **功能：**
@@ -201,25 +89,14 @@ install:httpie --method pip
 
 ### 通过别名（推荐）
 
-所有安装脚本都通过 `aliases.conf` 定义了别名：
-
-```bash
-install:font        # 安装字体
-install:nvim        # 安装 Neovim
-install:fnm         # 安装 fnm
-install:treesitter  # 安装 tree-sitter-cli
-install:fzf         # 安装 fzf
-install:httpie      # 安装 HTTPie
-```
+`install:httpie` 由 `plugins/tools/tools.zsh` 提供函数。其余脚本无别名。
 
 ### 直接运行脚本
 
 ```bash
 bash ~/dotfiles/scripts/install/install_font.sh
 bash ~/dotfiles/scripts/install/install_nvim.sh
-bash ~/dotfiles/scripts/install/install_fnm.sh
-bash ~/dotfiles/scripts/install/install_treesitter.sh
-bash ~/dotfiles/scripts/install/install_fzf.sh
+bash ~/dotfiles/scripts/install/install_zellij.sh
 bash ~/dotfiles/scripts/install/install_httpie.sh
 ```
 
@@ -242,13 +119,11 @@ bash ~/dotfiles/scripts/install/install_httpie.sh
 
 ### 通用依赖
 - `bash` - 所有脚本都需要
-- `curl` 或 `wget` - 用于下载文件
-- `git` - 用于克隆仓库（`install_fzf.sh`）
+- `git` - 用于克隆仓库（zellij 等场景）
 
 ### 特定依赖
 - `install_font.sh`: `tar`, `unzip`, `fc-cache` (Linux)
 - `install_nvim.sh`: `tar`
-- `install_fzf.sh`: `git` (必需), `make` 和 `go` (可选，用于编译)
 
 ---
 
@@ -264,11 +139,5 @@ bash ~/dotfiles/scripts/install/install_httpie.sh
 - 确保 `~/.local/nvim` 目录存在且可写
 - 验证系统架构是否支持
 
-### fzf 安装失败
-- 检查网络连接
-- 确保 Git 已安装
-- 如果二进制文件未编译，可能需要安装 Go 和 make
-- 检查 `~/.fzf` 目录权限
-- 确保 `~/.fzf/bin` 在 PATH 中
 
-**最后更新**: 2025-01-XX
+**最后更新**: 2026-08-18
