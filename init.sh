@@ -3,7 +3,7 @@
 # Used for first-time setup after cloning the repository
 # Usage: bash init.sh
 # Usage: bash init.sh --repair   # Repair broken zinit plugins (e.g., atuin)
-# Usage: bash init.sh --minimal  # Skip fonts, neovim, jq, yt-dlp, translate-shell
+# Usage: bash init.sh --minimal  # Skip fonts, neovim and heavy extras (translate-shell, yt-dlp, jq, viu)
 
 set -e
 
@@ -288,11 +288,11 @@ install_essentials() {
     local brew_packages="ripgrep fd bat lsd zoxide translate-shell glow mdcat viu yt-dlp tealdeer gping jq httpie broot htop"
 
     if [[ "$MINIMAL" == "true" ]]; then
-        print_info "Minimal mode: skipping translate-shell, yt-dlp, jq"
-        for pkg_list in debian_packages rhel_packages arch_packages brew_packages; do
+        print_info "Minimal mode: skipping translate-shell, yt-dlp, jq, viu"
+        for pkg_list in debian_packages rhel_packages arch_packages brew_packages void_packages; do
             local cleaned=""
             for pkg in ${!pkg_list}; do
-                if [[ "$pkg" != "translate-shell" && "$pkg" != "yt-dlp" && "$pkg" != "jq" ]]; then
+                if [[ "$pkg" != "translate-shell" && "$pkg" != "yt-dlp" && "$pkg" != "jq" && "$pkg" != "viu" ]]; then
                     cleaned="$cleaned $pkg"
                 fi
             done
@@ -872,7 +872,7 @@ install_docker() {
     fi
 }
 
-# Install additional tools (Zellij, Codex, Gemini, Opencode, Sbzr, Tree-sitter, etc.)
+# Install additional tools (Docker, Zellij, herdr, TPM tmux plugins)
 install_extra_tools() {
     local install_dir="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install"
     
@@ -945,7 +945,7 @@ main() {
 
     if [[ "$MINIMAL" == "true" ]]; then
         echo -e "${YELLOW}⚠  Minimal mode enabled${NC}"
-        echo "Skipping: fonts, neovim, jq, yt-dlp, translate-shell"
+        echo "Skipping: fonts, neovim, and heavy extras (translate-shell, yt-dlp, jq, viu)"
         echo ""
     fi
 
@@ -1069,7 +1069,7 @@ EOF
     echo ""
 
     # 12. Install additional tools
-    print_info "Step 12/12: Checking and installing additional tools (Zellij, Codex, etc.)"
+    print_info "Step 12/12: Installing additional tools (Docker, Zellij, herdr, TPM)"
     run_step "extra tools install" install_extra_tools
     echo ""
 

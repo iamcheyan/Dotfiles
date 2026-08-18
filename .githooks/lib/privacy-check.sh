@@ -76,7 +76,6 @@ privacy_filter_hits() {
       if (path ~ doc_path_regex && line ~ example_secret_regex) next
       if (line ~ /127[.]0[.]0[.]1/) next
       if (line ~ /0[.]0[.]0[.]0/) next
-      if (path ~ "^scripts/system/initialization[.]sh$" && line ~ /wps-office/) next
       print
     }
   ' "$input_file" > "$output_file"
