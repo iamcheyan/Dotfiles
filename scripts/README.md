@@ -22,7 +22,6 @@ scripts/
 - `install_gemini.sh` - 安装 Gemini
 - `install_httpie.sh` - 安装 HTTPie
 - `install_nvim.sh` - 安装 Neovim
-- `install_omnyssh.sh` - 安装 OmnySSH
 - `install_opencode.sh` - 安装 Opencode
 - `install_sbzr.sh` - 安装 Sbzr
 - `install_treesitter.sh` - 安装 Tree-sitter
