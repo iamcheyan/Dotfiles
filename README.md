@@ -144,14 +144,11 @@ dotfiles/
 ├── config/               # 应用配置（指向 ~/.config 下各应用）
 │   ├── nvim/             # Neovim (lazy.nvim self-managed)
 │   ├── ranger/           # Ranger 文件管理器
-│   ├── yazi/             # Yazi 配置（yazi 二进制未通过 zinit 安装）
 │   ├── atuin/            # Atuin 历史搜索
 │   ├── starship/         # Starship 提示符配置
-│   ├── kitty/            # Kitty 终端
 │   ├── ghostty/          # Ghostty 终端
 │   ├── zellij/           # Zellij
-│   ├── tmux/             # Tmux
-│   └── p10k/             # 遗留的 Powerlevel10k 配置（当前未使用，提示符已改用 Starship）
+│   └── tmux/             # Tmux
 ├── scripts/              # 自动化脚本
 │   ├── install/          # 安装脚本
 │   ├── dev/              # 开发工具
