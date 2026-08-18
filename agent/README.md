@@ -67,6 +67,46 @@ grok --model grok-4 "review this PR"
 oc -m deepseek/deepseek-v4-flash "summarize"
 ```
 
+## 新增 Agent（模板）
+
+新建 launcher 脚本遵循既有模式：**check binary → install → exec passthrough**。
+
+```bash
+#!/usr/bin/env bash
+# Usage:
+#   <name>                         # Run <name> CLI (default: last session)
+#   <name> -f                      # Force reinstall <name>
+set -euo pipefail
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# Check for -f flag (force reinstall)
+FORCE_REINSTALL=false
+for arg in "$@"; do
+  if [ "$arg" = "-f" ]; then
+    FORCE_REINSTALL=true
+    break
+  fi
+done
+
+if $FORCE_REINSTALL || ! command -v <binary-name> &>/dev/null; then
+  echo "<binary-name> not found, installing..."
+  curl -fsSL <install-url> | bash
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+exec <binary-name> "$@"
+```
+
+步骤：
+1. 复制模板到 `~/dotfiles/agent/<name>.sh`，`chmod +x`
+2. 替换 `<name>` / `<binary-name>` / `<install-url>`，加默认行为参数（如 `-c --dangerously-skip-permissions`）
+3. 在 `~/dotfiles/aliases.conf` 加 `alias <name>="$HOME/dotfiles/agent/<name>.sh"`
+4. 运行 `dotlink link` 同步软链
+5. 校验：`bash -n` 通过、可执行、alias 生效
+
+参考现有实现：`agent/mimo.sh`（模型切换）、`agent/codex.sh`（profile 管理）、`agent/copilot.sh`（最简示例）。
+
 ---
 
 ## 各 Agent 详细用法
