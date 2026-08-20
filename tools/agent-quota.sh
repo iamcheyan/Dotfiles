@@ -56,6 +56,10 @@ have() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# macOS ships BSD date, which does not support GNU date's `-d` option.
+# Prefer Homebrew's gdate when available, while keeping Linux compatibility.
+DATE_BIN="$(command -v gdate 2>/dev/null || command -v date)"
+
 line() {
   printf '%b\n' "$*"
 }
@@ -71,8 +75,8 @@ human_time() {
     return
   fi
 
-  if date -d "@$epoch" '+%Y-%m-%d %H:%M:%S %Z' >/dev/null 2>&1; then
-    date -d "@$epoch" '+%Y-%m-%d %H:%M:%S %Z'
+  if "$DATE_BIN" -d "@$epoch" '+%Y-%m-%d %H:%M:%S %Z' >/dev/null 2>&1; then
+    "$DATE_BIN" -d "@$epoch" '+%Y-%m-%d %H:%M:%S %Z'
   else
     date -r "$epoch" '+%Y-%m-%d %H:%M:%S %Z'
   fi
@@ -241,7 +245,7 @@ kiro_access_token() {
   if [ -n "$expires_at" ] && [ "$expires_at" != "null" ]; then
     local now exp
     now=$(date '+%s')
-    exp=$(date -d "$expires_at" '+%s' 2>/dev/null || printf '0')
+    exp=$("$DATE_BIN" -d "$expires_at" '+%s' 2>/dev/null || printf '0')
     if [ "$exp" -gt 0 ] && [ "$((exp - now))" -gt 60 ]; then
       printf '%s' "$at"
       return 0
@@ -508,8 +512,8 @@ show_codex() {
   peak="$(jq -r '.usage.summary.peakDailyTokens // 0' <<<"$data")"
   streak="$(jq -r '.usage.summary.currentStreakDays // 0' <<<"$data")"
   today="$(jq -r --arg d "$(date +%F)" '[.usage.dailyUsageBuckets[]? | select(.startDate == $d) | .tokens] | add // 0' <<<"$data")"
-  week="$(jq -r --arg d "$(date -d '6 days ago' +%F)" '[.usage.dailyUsageBuckets[]? | select(.startDate >= $d) | .tokens] | add // 0' <<<"$data")"
-  month="$(jq -r --arg d "$(date -d '29 days ago' +%F)" '[.usage.dailyUsageBuckets[]? | select(.startDate >= $d) | .tokens] | add // 0' <<<"$data")"
+  week="$(jq -r --arg d "$("$DATE_BIN" -d '6 days ago' +%F)" '[.usage.dailyUsageBuckets[]? | select(.startDate >= $d) | .tokens] | add // 0' <<<"$data")"
+  month="$(jq -r --arg d "$("$DATE_BIN" -d '29 days ago' +%F)" '[.usage.dailyUsageBuckets[]? | select(.startDate >= $d) | .tokens] | add // 0' <<<"$data")"
   line "tokens: ${GREEN}today $(format_tokens "$today")${RESET}, ${CYAN}7d $(format_tokens "$week")${RESET}, ${BLUE}30d $(format_tokens "$month")${RESET}, ${DIM}lifetime $(format_tokens "$lifetime")${RESET}"
   line "peak daily tokens: ${MAGENTA}$(format_tokens "$peak")${RESET}; current streak: ${YELLOW}${streak}d${RESET}"
 }
@@ -518,8 +522,8 @@ show_codex() {
 iso_time() {
   local iso="${1:-}"
   [ -z "$iso" ] || [ "$iso" = "null" ] && { printf 'unknown'; return; }
-  if date -d "$iso" '+%Y-%m-%d %H:%M:%S %Z' >/dev/null 2>&1; then
-    date -d "$iso" '+%Y-%m-%d %H:%M:%S %Z'
+  if "$DATE_BIN" -d "$iso" '+%Y-%m-%d %H:%M:%S %Z' >/dev/null 2>&1; then
+    "$DATE_BIN" -d "$iso" '+%Y-%m-%d %H:%M:%S %Z'
   else
     date -j -f '%Y-%m-%dT%H:%M:%SZ' "$iso" '+%Y-%m-%d %H:%M:%S %Z' 2>/dev/null || printf '%s' "$iso"
   fi
@@ -529,8 +533,8 @@ iso_time() {
 iso_to_epoch() {
   local iso="${1:-}"
   [ -z "$iso" ] || [ "$iso" = "null" ] && { printf '0'; return; }
-  if date -d "$iso" '+%s' >/dev/null 2>&1; then
-    date -d "$iso" '+%s'
+  if "$DATE_BIN" -d "$iso" '+%s' >/dev/null 2>&1; then
+    "$DATE_BIN" -d "$iso" '+%s'
   else
     date -j -f '%Y-%m-%dT%H:%M:%SZ' "$iso" '+%s' 2>/dev/null || printf '0'
   fi
@@ -582,7 +586,7 @@ agy_refresh_token() {
   if [ -n "$access_token" ] && [ -n "$expiry" ] && [ "$expiry" != "null" ]; then
     local now exp
     now=$(date '+%s')
-    exp=$(date -d "$expiry" '+%s' 2>/dev/null || printf '0')
+    exp=$("$DATE_BIN" -d "$expiry" '+%s' 2>/dev/null || printf '0')
     if [ "$exp" -gt 0 ] && [ "$((exp - now))" -gt 60 ]; then
       printf '%s' "$access_token"
       return 0

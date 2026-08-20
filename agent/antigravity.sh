@@ -52,6 +52,34 @@ if command -v fnm &>/dev/null; then
   }
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_PATH="$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")"
+
+# The official CLI is also named `agy` and installs to ~/.local/bin/agy.
+# This wrapper is commonly linked to that exact path, so `command -v agy`
+# can resolve back to this script and recurse forever. Prefer the native
+# `antigravity` binary when it is available, and reject this wrapper as a CLI.
+ANTIGRAVITY_BIN=""
+for candidate in \
+  "$HOME/.local/bin/antigravity" \
+  "$HOME/.antigravity/bin/antigravity" \
+  "$HOME/.antigravity/bin/agy"; do
+  if [ -x "$candidate" ] && [ "$candidate" -ef "$SCRIPT_PATH" ] 2>/dev/null; then
+    continue
+  fi
+  if [ -x "$candidate" ]; then
+    ANTIGRAVITY_BIN="$candidate"
+    break
+  fi
+done
+
+if [ -z "$ANTIGRAVITY_BIN" ]; then
+  AGY_COMMAND="$(command -v agy 2>/dev/null || true)"
+  if [ -n "$AGY_COMMAND" ] && [ ! "$AGY_COMMAND" -ef "$SCRIPT_PATH" ] 2>/dev/null; then
+    ANTIGRAVITY_BIN="$AGY_COMMAND"
+  fi
+fi
+
 # Check for -f flag (force reinstall)
 FORCE_REINSTALL=false
 for arg in "$@"; do
@@ -62,9 +90,16 @@ for arg in "$@"; do
 done
 
 # Install if needed
-if $FORCE_REINSTALL || ! command -v agy &>/dev/null; then
+if $FORCE_REINSTALL || [ -z "$ANTIGRAVITY_BIN" ]; then
   echo "agy not found, installing..."
-  curl -fsSL https://antigravity.google/cli/install.sh | bash
+  curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --skip-aliases
+  ANTIGRAVITY_BIN="$(command -v agy 2>/dev/null || true)"
+fi
+
+if [ -z "$ANTIGRAVITY_BIN" ] || [ "$ANTIGRAVITY_BIN" -ef "$SCRIPT_PATH" ] 2>/dev/null; then
+  echo "Error: native Antigravity CLI not found; refusing to recurse into $SCRIPT_PATH" >&2
+  echo "Install it with: curl -fsSL https://antigravity.google/cli/install.sh | bash" >&2
+  exit 1
 fi
 
 ACCOUNTS_FILE="$HOME/.config/opencode/antigravity-accounts.json"
@@ -83,7 +118,6 @@ GEMINI_OAUTH="$HOME/.gemini/oauth_creds.json"
 # Load OAuth credentials from local .env if available
 ANTIGRAVITY_CLIENT_ID=""
 ANTIGRAVITY_CLIENT_SECRET=""
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -f "$SCRIPT_DIR/.env" ]; then
   ANTIGRAVITY_CLIENT_ID=$(grep -E "^ANTIGRAVITY_CLIENT_ID=" "$SCRIPT_DIR/.env" | cut -d'=' -f2- | tr -d '"'\' | tr -d '\r')
   ANTIGRAVITY_CLIENT_SECRET=$(grep -E "^ANTIGRAVITY_CLIENT_SECRET=" "$SCRIPT_DIR/.env" | cut -d'=' -f2- | tr -d '"'\' | tr -d '\r')
@@ -304,7 +338,7 @@ fi
 EXTRA_ARGS+=("--dangerously-skip-permissions")
 if [ ${#EXTRA_ARGS[@]} -eq 1 ]; then
   # No user args: continue last session
-  exec agy --continue --dangerously-skip-permissions
+  exec "$ANTIGRAVITY_BIN" --continue --dangerously-skip-permissions
 else
-  exec agy "${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}"
+  exec "$ANTIGRAVITY_BIN" "${EXTRA_ARGS[@]+"${EXTRA_ARGS[@]}"}"
 fi
