@@ -29,19 +29,6 @@ if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
     export TERM=xterm-256color
 fi
 
-# kitty shell integration（手动加载）
-# NixOS 的 kitty wrapper 给子 shell 注入 KITTY_SHELL_INTEGRATION="enabled no-rc"，
-# no-rc 表示 kitty 不向 zshrc 自动注入加载代码。结果 kitty 收不到前台命令上报
-# （`kitty @ ls` 的 last_reported_cmdline 恒为空），sumika-session 的桌面快照
-# 因此捕获不到 pane 里的 tmux/zellij 会话，恢复后只剩裸 shell。
-# 按 kitty 官方文档在 zshrc 中手动加载集成脚本（在所有 shell 中生效）：
-# https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration
-if [[ -n "$KITTY_INSTALLATION_DIR" && -n "$KITTY_SHELL_INTEGRATION" ]]; then
-    export KITTY_SHELL_INTEGRATION="enabled"
-    autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
-    kitty-integration
-    unfunction kitty-integration
-fi
 
 export PATH="$HOME/.fzf/bin:$PATH"
 
@@ -145,8 +132,8 @@ else
 fi
 
 # aliases
+[[ -f ~/.config/aliases.conf ]] && source ~/.config/aliases.conf
 [[ -f ~/dotfiles/aliases.conf ]] && source ~/dotfiles/aliases.conf
-[[ -f ~/chezmoi/dot_config/aliases.conf ]] && source ~/chezmoi/dot_config/aliases.conf
 
 # SSH 会话时在窗口标题前加 [SSH] 标记
 function _update_window_title() {
@@ -167,22 +154,6 @@ v() {
     rm -f "$tmp"
   fi
 }
-
-# mimocode
-export PATH="$HOME/.mimocode/bin:$PATH"
-
-
-# bun completions
-[[ -s "$HOME/.bun/_bun" ]] && source "$HOME/.bun/_bun"
-
-# npm global packages (user-level prefix)
-export PATH="$HOME/.npm-global/bin:$PATH"
-
-# omp/opencode 共享 API key:从 ~/.env 导入(shell 环境变量优先于 omp 自加载)
-[[ -f ~/.env ]] && source ~/.env
-
-# pi wrapper (points at user-installed pi-coding-agent, not /usr/bin/pi)
-export PATH="$HOME/.pi/bin:$PATH"
 
 # fnm lazy loader 已在 setup_fnm.sh (line 51) 中设置，这里不再重复初始化。
 
