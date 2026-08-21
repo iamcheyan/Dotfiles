@@ -4,9 +4,10 @@ if [[ -n "$TERM" ]] && ! infocmp -- "$TERM" >/dev/null 2>&1; then
     export TERM=xterm-256color
 fi
 
-# WSL 上如果 Windows 挂载（/mnt/c 等）异常，zsh 在扫描 PATH 时会卡死。
-# 交互 shell 里先移除 /mnt 下的 PATH 项，优先保证 shell 可用性。
-if [[ -n "$WSL_DISTRO_NAME" ]]; then
+# WSL 路径优化：默认保留 Windows 互操作（如 explorer.exe, code 等）。
+# 若 Windows 磁盘挂载卡顿，可导出 WSL_STRIP_WINDOWS_PATH=1 启用过滤，
+# 或推荐在 /etc/wsl.conf 中设置 [interop] appendWindowsPath = false。
+if [[ -n "$WSL_DISTRO_NAME" && "${WSL_STRIP_WINDOWS_PATH:-0}" == "1" ]]; then
     typeset -gaU path
     path=(${path:#/mnt/*})
     export PATH="${(j/:/)path}"
