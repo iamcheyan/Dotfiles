@@ -69,7 +69,6 @@ privacy_filter_hits() {
       if (path == ".githooks/pre-push") next
       if (path == ".githooks/pre-commit") next
       if (path == ".githooks/lib/privacy-check.sh") next
-      if (path == "agent/antigravity.sh" && line ~ /security.*-generic-password/) next
       if (path == "git.md" && line ~ /(\/home\/[^[:space:]]+\/dotfiles|\\\$HOME\/dotfiles)/) next
       if (path == "doc/git.md" && line ~ /(\/home\/[^[:space:]]+\/dotfiles|\\\$HOME\/dotfiles)/) next
       if (line ~ comment_regex) next

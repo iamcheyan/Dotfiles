@@ -16,8 +16,6 @@ $HOME/dotfiles/config/atuin:$HOME/.config/atuin                          #atuin�
 $HOME/dotfiles/config/ghostty:$HOME/.config/ghostty                      #ghostty终端配置
 $HOME/dotfiles/config/herdr/config.toml:$HOME/.config/herdr/config.toml				#herdr
 
-# env 凭据文件: 根目录 .env 软链接到 ~/.hermes/.env (Hermes 只读 ~/.hermes/.env)
-$HOME/.env:$HOME/.hermes/.env
 
 # ranger
 $HOME/dotfiles/config/ranger:$HOME/.config/ranger

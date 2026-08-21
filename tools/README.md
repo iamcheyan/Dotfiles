@@ -60,36 +60,7 @@ winetricks corefonts              # 安装核心字体
 
 ---
 
-### 5. `agent-quota.sh` - 代理配额查看工具
-
-**功能**：实时查看 Codex / AGY(Gemini) / Grok 的 API 配额、使用量和重置时间。
-
-**用法**：
-```bash
-aq                              # 查看所有配额状态
-aq --json                       # 输出 Codex 原始 JSON
-```
-
-**别名**：`aq`
-
----
-
-### 6. `opencode_config.py` - opencode.json 配置编辑器
-
-**功能**： curses TUI 编辑器，浏览和修改 `~/.config/opencode/opencode.json` 中的 provider、模型、权限等配置。**仅依赖 Python 标准库**，无需额外安装。
-
-**用法**：
-```bash
-ocfg                            # 编辑默认配置
-ocfg /path/to/opencode.json     # 编辑指定配置
-```
-
-**操作**：方向键导航，Enter 编辑，s 保存（自动备份），r 重载，q 退出，/ 搜索。编辑 Provider 或模型时 Tab 切换字段。
-
-**别名**：`ocfg`
-
 ---
 ## 相关文档
 
-- [主 README](../README.md) - 整体目录结构说明
 - [Scripts README](../scripts/README.md) - Scripts 目录详细说明

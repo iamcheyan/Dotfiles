@@ -872,7 +872,7 @@ install_docker() {
     fi
 }
 
-# Install additional tools (Docker, Zellij, herdr, TPM tmux plugins)
+# Install additional tools (Docker, Zellij, TPM tmux plugins)
 install_extra_tools() {
     local install_dir="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install"
     
@@ -893,15 +893,6 @@ install_extra_tools() {
         print_success "Zellij is already installed"
     fi
 
-    # herdr - local AI coding assistant
-    if ! command_exists herdr; then
-        print_info "Installing herdr..."
-        curl -fsSL https://herdr.dev/install.sh | sh
-        print_success "herdr installed successfully"
-    else
-        print_success "herdr is already installed"
-    fi
-
     # Tmux Plugins (TPM)
     if command_exists tmux; then
         print_info "Checking and installing tmux plugins (TPM)..."
@@ -912,7 +903,6 @@ install_extra_tools() {
         fi
         
         # Start a detached tmux session if not running to allow script-based plugin installation
-        print_info "Installing configured tmux plugins..."
         tmux new-session -d -s tpm-install 2>/dev/null || true
         tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
         bash "$tpm_dir/bin/install_plugins" >/dev/null 2>&1 || true
@@ -922,6 +912,7 @@ install_extra_tools() {
         print_warning "tmux is not installed, skipping tmux plugins installation"
     fi
 }
+
 
 # Main function
 main() {

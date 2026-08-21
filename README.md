@@ -68,27 +68,6 @@ zsh
 | `ps` | procs | 更友好的进程查看 |
 | `cd` | zoxide | 智能目录跳转（记住历史路径） |
 
-## AI Agent 集成
-
-统一的 AI coding agent 启动脚本，自动安装、自动配置，默认恢复上次会话并跳过审批。详见 `agent/README.md`。
-
-```bash
-cx        # Codex (OpenAI)
-cc        # Claude Code (Anthropic)
-agy       # Antigravity (Google Gemini)
-grok      # Grok (xAI)
-omp       # Oh My Pi
-mypi      # Pi
-mimo      # MiMo Code
-oc        # OpenCode
-copilot   # GitHub Copilot
-cur       # Cursor Agent
-kiro      # Kiro CLI
-aq        # Agent quota/status 快照
-```
-
-所有 wrapper 无参数运行时默认行为：恢复上次会话 + 跳过权限确认。支持 `-f` 强制重装，未捕获的参数透传给底层 CLI。所有 agent 已适配 tmux-persist 会话恢复。
-
 ## Neovim 插件列表
 
 Neovim 配置直接基于 `lazy.nvim`，不导入 LazyVim 发行版。会话保存/恢复由 **auto-session** 插件处理（按 cwd 自动保存和恢复），不依赖 vim-obsession 或 Session.vim。
@@ -153,10 +132,9 @@ dotfiles/
 │   ├── install/          # 安装脚本
 │   ├── dev/              # 开发工具
 │   └── system/           # 系统工具
-├── tools/                # 独立工具脚本
-├── agent/                # Agent 脚本（cc/cx/opencode 等）
+├── tools/                # 通用工具脚本
 ├── documents/            # 文档/笔记
-└── rime/                 # Rime 输入法配置
+└── rime/                 # Rime 输入法配置（独立仓库，不由本项目管理）
 ```
 
 ## 日常命令

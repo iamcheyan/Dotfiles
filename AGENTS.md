@@ -13,14 +13,22 @@
 
 ## 本仓库管理范围（dotlink）
 
-zshrc、aliases.conf、tmux、nvim、zellij、ranger、vifm、ghostty、atuin、starship、nano、gvim、herdr、`.env → ~/.hermes/.env`。
-具体见 `dotlink/dotlinkrc`。
+本公开仓库只管理通用、可分享的 Zsh + Neovim 基础配置，以及通用终端工具配置：
 
-## 另一套：chezmoi（个人私有，独立仓库）
+* `zshrc`、`aliases.conf`
+* Zsh 插件、补全、fzf、zoxide、atuin 与通用工具
+* Neovim、Tmux、Ranger、Vifm、Ghostty、Starship 等公开配置
+* `dotlink` 软链接规则与跨平台初始化脚本
 
-另一批偏个人/私有的配置（kitty、fcitx5、alacritty、yazi、omnyssh、cliphist、sumika-shell、hermes、bitwarden、secrets 等）
-由 **chezmoi** 管理，源在 `~/chezmoi`（仓库 github.com/iamcheyan/chezmoi），与本项目互不重叠。
-改那些配置要编辑 `~/chezmoi` 下的源并 `chezmoi apply`，**不要在本仓库里动它们**。
+## 私有配置边界
+
+以下内容不属于本公开仓库，由私有 **Chezmoi** 仓库管理：
+
+* AI Agent wrappers、配额工具与个人 provider 配置
+* Kitty、Yazi、Zellij、Fcitx5、Karabiner、Sumika Shell、Bitwarden、Hermes 等个人配置
+* API Key、Token、`.env`、私有服务器地址与机器专属脚本
+
+改这些内容应编辑 `~/chezmoi` 或其 Git 子模块并执行 `chezmoi apply`，**不要重新放回本仓库**。
 
 ## 子模块
 
