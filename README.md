@@ -1,222 +1,163 @@
-# Public Dotfiles
+# 🚀 Dotfiles — 现代化终端开发环境一键配置
 
-Portable Zsh and Neovim environment for terminal-first development.
+> 基于 **Zsh + 自管 Neovim (lazy.nvim) + Tmux + 本地 AI 工具 (Herdr)** 的全套极速、开箱即用终端配置方案。
+> 纯公开、零外部强依赖，一行命令跨平台全自动交付！
 
-This repository is intentionally public and standalone. It can be cloned and used without Chezmoi. It provides a practical shell, editor, Tmux, file-manager, and terminal workflow while keeping machine-specific credentials and private integrations outside the repository.
+---
 
-## What You Get After Cloning
+## 🌟 核心卖点
 
-After running the initializer and linking the configuration, you get:
+### 1. ⚡ 一键全自动初始化（One-Click Setup）
+* **跨平台全自动适配**：原生支持 **Debian / Ubuntu / Arch Linux / Fedora / Void / macOS**。
+* **一行命令搞定一切**：自动安装并配置所需工具链（`eza`、`bat`、`fd`、`ripgrep`、`zoxide`、`fzf`、`jq`、`btop` 等）、Nerd Font 字体、Zsh 插件与软链接，无需手动折腾。
 
-### Zsh
+### 2. 🐚 极速现代化 Zsh 终端体验
+* **Zinit 异步加载**：零延迟秒开，告别臃肿缓慢的 oh-my-zsh。
+* **Starship 智能 Prompt**：优雅、信息丰富、极速渲染的终端提示符。
+* **zsh-vi-mode 深度整合**：原生 Vim 命令行编辑模式，在终端直接享受 `hjkl`。
+* **强大的补全与历史**：
+  * `fzf-tab`：可视化的模糊搜索交互补全界面。
+  * `zsh-autosuggestions` + `zsh-autopair`：智能历史建议与括号自动配对。
+  * `Atuin`（`Ctrl+R`）：支持上下文关联的增强版命令历史搜索。
+  * `Zoxide`（`z`）：智能目录学习与快速跳转。
+* **现代 CLI 替换传统命令**：
+  * `ls` $\rightarrow$ `eza`（带色彩与图标的高颜值文件列表，支持 `l`, `ll`, `la`）
+  * `cat` $\rightarrow$ `bat`（带语法高亮与行号的文件查看器）
+  * `find` $\rightarrow$ `fd` / `grep` $\rightarrow$ `ripgrep`（千百倍极速文本与文件检索）
 
-- Zsh startup configuration with safe `TERM`/terminfo fallback.
-- Zsh Vim editing mode.
-- Zinit-based plugin loading.
-- Starship prompt support.
-- Autosuggestions, syntax highlighting, autopair, completion, and `fzf-tab`.
-- Atuin history integration when Atuin is installed.
-- Zoxide directory jumping when Zoxide is installed.
-- Optional WSL Windows-PATH filtering through `WSL_STRIP_WINDOWS_PATH=1`.
-- Portable aliases and helper functions for `eza`, `bat`, `fd`, `ripgrep`, Ranger, Vifm, and Yazi-compatible workflows.
+### 3. 📝 开箱即用的专业自管 Neovim（基于 lazy.nvim）
+* **纯自管轻量架构**：直接基于 `lazy.nvim` 精心构建，**非** 臃肿黑盒发行版（非 AstroNvim/LazyVim），代码结构透明清晰，启动时间 < 50ms。
+* **完整的现代 IDE 能力**：
+  * **LSP 自动管理**：Mason + Mason-LSPconfig 一键安装并管理各语言 Language Server。
+  * **代码补全与格式化**：Blink.cmp 极速智能补全 + Conform 自动代码格式化。
+  * **语法分析与高亮**：Treesitter 语法高亮、代码折叠与文本对象。
+* **生产力神器合集**：
+  * `Telescope` + `Snacks`：极速模糊搜索文件、文本与符号。
+  * `Neo-tree` + `Oil.nvim`：支持双模式文件树管理（侧边栏文件树 + Buffer 自由编辑重构目录）。
+  * `Flash.nvim`：键盘任意位置双键直达跳转。
+  * `Gitsigns` + `Diffview`：行级 Git 变动高亮与完整文件历史对比。
+  * `Auto-session`：根据工作目录（cwd）全自动保存和恢复编辑现场。
+  * `Yanky.nvim`：支持持久化剪贴板历史与循环粘贴。
+  * `Vimquest`：内置英语单词拼写练习扩展。
 
-### Neovim
+### 4. 🤖 本地 AI 工具与终端复用生态
+* **内置热门本地 AI 助手 Herdr**：
+  * `init.sh` 脚本自动安装并配置当前热门的终端本地 AI 编程助手 [Herdr](https://herdr.dev/)。
+  * 预置优雅的主题配置文件（`~/.config/herdr/config.toml`），开箱即用。
+* **Tmux 生产力套件**：
+  * 开启鼠标支持、RGB 真彩色渲染、精简状态栏。
+  * 集成 TPM 插件管理器、`tmux-resurrect` 与 `tmux-continuum`，支持跨重启自动保存与恢复终端会话。
+* **轻量文件管理器**：内置配置好的 `Ranger`（按 `r` 快速调用）与 `Vifm`（按 `v` 快速调用）。
+* **自研零依赖软链工具 `dotlink`**：纯 Shell 编写的极简配置软链管理器，不依赖 Chezmoi 或任何外部工具即可独立运转。
 
-- Standalone `lazy.nvim` setup; it does not depend on LazyVim.
-- LSP and Mason server management.
-- Treesitter syntax highlighting, folding, and text objects.
-- Telescope, Snacks, Neo-tree, Oil, and Flash navigation tools.
-- Blink completion, conform formatting, Gitsigns, Diffview, and Fidget.
-- Heirline statusline and Bufferline tabline.
-- Auto-session persistence by working directory.
-- Yanky clipboard history, mini.ai, mini.pairs, Which-Key, and Vim Visual Multi.
-- Vimquest language-learning plugin and other optional public plugins.
+---
 
-### Tmux
+## 📦 快速安装与使用
 
-- Tmux configuration with mouse support, RGB/true-color settings, and a compact status bar.
-- Tmux Plugin Manager (TPM), tmux-resurrect, and tmux-continuum integration.
-- Public configuration remains portable; personal AI-agent restore rules are loaded only from an optional private file managed by Chezmoi.
-- A local uncommitted customization may be added to `config/tmux/tmux.conf` without affecting the public baseline.
-
-### Herdr Local AI Assistant
-
-The initializer installs **Herdr**, a local AI coding assistant designed for terminal workflows. This is a deliberate public feature of this repository:
-
-- `bash init.sh` installs Herdr when it is not already available.
-- `config/herdr/config.toml` provides a small, shareable baseline theme configuration.
-- The configuration is linked to `~/.config/herdr/config.toml` by `dotlink`.
-- No API keys, tokens, conversations, or private provider credentials are stored here.
-- If you do not want Herdr, remove or comment out the Herdr block in `init_extra_tools()` before running the initializer.
-
-Herdr is separate from the private Agent wrappers in Chezmoi: this repository provides only the public installation and baseline configuration.
-
-### Other Public Configurations
-
-- Ranger with Vim-style navigation and public plugins.
-- Vifm configuration and helper functions.
-- Ghostty configuration.
-- Atuin, Starship, Nano, and related terminal utilities.
-- `dotlink`, a small shell-based symlink manager with no Chezmoi dependency.
-
-## What This Repository Does Not Include
-
-The following remain in the private `iamcheyan/chezmoi` repository:
-
-- Kitty, Yazi, and Zellij configurations.
-- Other personal AI-agent wrappers, provider configuration, quota tools, and private tmux-agent restore logic.
-- API keys, tokens, `.env` files, credentials, private server addresses, and machine-specific scripts.
-
-The public repository may optionally load `~/.config/aliases.conf` from a user's own system. That file is not part of this repository and is the extension point used by the private Chezmoi configuration.
-
-## Installation
-
-### 1. Clone
+### 第一步：克隆本仓库
 
 ```bash
 git clone https://github.com/iamcheyan/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
-### 2. Run the initializer
+### 第二步：运行全自动初始化脚本
 
 ```bash
-bash init.sh              # Full installation
-bash init.sh --minimal    # Minimal installation
-bash init.sh --repair     # Repair cached Zinit plugins
+bash init.sh              # 推荐：完整全自动安装
+bash init.sh --minimal    # 轻量安装（跳过字体等大型组件）
+bash init.sh --repair     # 修复损坏的插件缓存
 ```
 
-The initializer detects the host operating system and can install common dependencies such as:
+> **初始化脚本会自动完成**：
+> 1. 安装 Zsh 并设为系统默认 Shell。
+> 2. 安装必备现代工具链（`git`、`curl`、`ripgrep`、`fd`、`bat`、`eza`、`zoxide`、`fzf`、`jq`、`btop` 等）。
+> 3. 安装配置 `zinit`、`Starship`、`Atuin`、`pyenv`、`fnm`。
+> 4. 安装并拉取 Neovim 插件与 Treesitter 解析器。
+> 5. 安装 Docker（支持的 Linux 发行版）与 Herdr 本地 AI 助手。
+> 6. 通过 `dotlink` 自动建立全部配置文件的符号链接。
 
-- Git, curl, wget, ripgrep, fd, bat, eza, zoxide, fzf, jq, and related CLI tools.
-- Zsh and the configured shell environment.
-- Neovim and its public lazy.nvim configuration.
-- Python/Node tooling used by the shell setup.
-- Docker on supported Linux distributions.
-- Zellij, Herdr, and Tmux Plugin Manager when available.
-
-Package availability varies by distribution. The script skips unavailable packages and prints warnings instead of assuming every package exists everywhere.
-
-### 3. Create symlinks
+### 第三步：应用软链接并进入环境
 
 ```bash
 bash dotlink/dotlink link
-```
-
-The public link set includes:
-
-```text
-~/dotfiles/zshrc                         -> ~/.zshrc
-~/dotfiles/config/nvim                   -> ~/.config/nvim
-~/dotfiles/config/tmux/tmux.conf         -> ~/.tmux.conf
-~/dotfiles/config/ranger                 -> ~/.config/ranger
-~/dotfiles/config/vifm/*                 -> ~/.config/vifm/*
-~/dotfiles/config/ghostty                -> ~/.config/ghostty
-~/dotfiles/config/atuin                  -> ~/.config/atuin
-~/dotfiles/config/herdr/config.toml      -> ~/.config/herdr/config.toml
-~/dotfiles/config/starship/starship.toml -> ~/.config/starship.toml
-```
-
-### 4. Start a new shell
-
-```bash
 exec zsh
 ```
 
-The first interactive shell may install or cache Zinit-managed plugins. Restart the shell after plugin installation if a newly installed plugin is not immediately available.
+---
 
-## Common Commands
+## 📂 部署目标软链接清单
 
-```bash
-bash dotlink/dotlink link       # Create or repair symlinks
-bash init.sh --repair           # Repair Zinit/plugin state
-exec zsh                        # Reload the current shell
-```
+通过 `dotlink` 会在系统中建立以下干净的符号链接：
 
-Useful aliases are conditionally enabled when their commands exist:
+| 源码路径 | 目标部署路径 | 对应功能 |
+|---|---|---|
+| `~/dotfiles/zshrc` | `~/.zshrc` | Zsh 主配置文件 |
+| `~/dotfiles/config/nvim` | `~/.config/nvim` | Neovim 完整 IDE 配置 |
+| `~/dotfiles/config/tmux/tmux.conf` | `~/.tmux.conf` | Tmux 会话管理配置 |
+| `~/dotfiles/config/ranger` | `~/.config/ranger` | Ranger 终端文件管理器 |
+| `~/dotfiles/config/vifm/*` | `~/.config/vifm/*` | Vifm 终端文件管理器 |
+| `~/dotfiles/config/ghostty` | `~/.config/ghostty` | Ghostty 终端配置 |
+| `~/dotfiles/config/atuin` | `~/.config/atuin` | Atuin 命令历史搜索配置 |
+| `~/dotfiles/config/herdr/config.toml` | `~/.config/herdr/config.toml` | Herdr 本地 AI 助手配置 |
+| `~/dotfiles/config/starship/starship.toml` | `~/.config/starship.toml` | Starship 终端提示符主题 |
 
-```text
-l / ll / la    eza directory listings
-r              Ranger with cwd handoff
-v              Vifm with cwd handoff
-zi / za / zr   Zoxide helpers
-```
+---
 
-## Repository Layout
+## ⌨️ 常用快捷键速查
+
+### 1. 终端命令行（Zsh Vim 模式）
+* **`Ctrl + R`**：呼出 Atuin 增强版历史命令搜索
+* **`Esc`**：进入命令行 Vim 普通模式（支持 `h/j/k/l` 移动、`w/b` 跳词、`dd` 删行、`cw` 改词）
+* **`l` / `ll` / `la`**：调用 `eza` 查看带图标与 Git 状态的文件列表
+* **`z <目录名>`**：Zoxide 智能跳转目录
+* **`r`**：打开 Ranger 并在退出时自动 `cd` 到最后停留的目录
+* **`v`**：打开 Vifm 并在退出时自动 `cd` 到最后停留的目录
+
+### 2. Neovim 核心键位（空格键 Leader）
+* **`<Space> e`**：展开/折叠 Neo-tree 侧边栏文件树
+* **`-`**：打开 Oil 目录编辑器（直接把目录当作 Buffer 增删重命名文件）
+* **`<Space> ff`**：全局模糊查找文件（Find Files）
+* **`<Space> fg`**：全局代码文本搜索（Live Grep）
+* **`<Space> gg`**：打开 Lazygit 交互界面
+* **`<Space> xx`**：打开 Trouble 错误与警告诊断列表
+* **`s` + 双字符**：Flash 屏幕任意位置双键直达跳转
+* **`gcc`**：单行注释 / 取消注释
+* **`gc`**：选中区域代码块注释
+
+---
+
+## 🛠️ 项目目录结构
 
 ```text
 dotfiles/
-├── zshrc                  # Public Zsh entrypoint
-├── aliases.conf           # Public aliases and shell helpers
-├── init.sh                # Cross-platform initializer
-├── dotlink/               # Symlink manager and link manifest
-├── config/
-│   ├── nvim/              # Neovim lazy.nvim configuration
-│   ├── tmux/              # Public Tmux baseline
-│   ├── ranger/            # Ranger configuration
-│   ├── vifm/              # Vifm configuration
-│   ├── ghostty/           # Ghostty configuration
-│   ├── atuin/             # Atuin configuration
-│   └── starship/           # Starship configuration
-├── plugins/               # Public Zsh/plugin helpers
-├── scripts/               # Public installation and utility scripts
-└── tools/                 # Public standalone tools
+├── zshrc                  # Zsh 主入口配置
+├── aliases.conf           # 通用别名与实用函数
+├── init.sh                # 跨平台一键全自动初始化脚本
+├── dotlink/               # 自研轻量符号链接管理器
+├── config/                # 应用配置集合
+│   ├── nvim/              # Neovim lazy.nvim 配置
+│   ├── tmux/              # Tmux 会话复用配置
+│   ├── herdr/             # Herdr 本地 AI 助手配置
+│   ├── ranger/            # Ranger 文件管理器配置
+│   ├── vifm/              # Vifm 文件管理器配置
+│   ├── ghostty/           # Ghostty 终端配置
+│   ├── atuin/             # Atuin 命令历史配置
+│   └── starship/          # Starship 提示符主题
+├── plugins/               # Zsh 插件与补全辅助
+├── scripts/               # 安装与系统检测脚本
+└── tools/                 # 通用实用工具脚本
 ```
 
-Kitty, Yazi, and Zellij are deliberately absent here because they are maintained as separate public repositories and embedded as submodules in the private Chezmoi repository:
+---
 
-- https://github.com/iamcheyan/kitty
-- https://github.com/iamcheyan/yazi
-- https://github.com/iamcheyan/zellij
+## 🔒 纯净与安全承诺
 
-## Customization
+* **100% 通用开源**：本仓库**绝不包含**任何个人 API Key、密码、Token、私有服务器 IP 或硬编码绝对路径。
+* **独立运行**：不强绑 Chezmoi 或任何私有系统，任何人均可放心 Fork 与二次定制。
 
-### Add a public alias
+---
 
-Edit `aliases.conf`:
+## 📄 开源许可证
 
-```bash
-alias mycommand="original-command"
-```
-
-Then recreate links and reload Zsh:
-
-```bash
-bash dotlink/dotlink link
-exec zsh
-```
-
-### Add a Neovim plugin
-
-Create a Lua file under `config/nvim/lua/plugins/`:
-
-```lua
-return {
-  {
-    "author/plugin-name",
-    config = function()
-      -- plugin configuration
-    end,
-  },
-}
-```
-
-### Keep machine-specific configuration private
-
-Put personal aliases, API-related wrappers, private paths, and provider configuration in your private Chezmoi repository instead of adding them here.
-
-## Checks Before Publishing
-
-```bash
-zsh -n zshrc
-bash -n init.sh
-bash -n aliases.conf
-git diff --check
-git status
-```
-
-Do not publish `.env`, credentials, private keys, tokens, personal absolute paths, or private network details.
-
-## License
-
-MIT License
+本项目基于 [MIT 许可证](LICENSE) 开源。欢迎 Star 🌟 与 Fork！
