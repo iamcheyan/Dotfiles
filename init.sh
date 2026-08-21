@@ -281,11 +281,11 @@ install_essentials() {
     print_info "Checking essential tools..."
 
     local common_packages="git curl wget unzip git-extras ffmpeg"
-    local debian_packages="build-essential ripgrep fd-find bat lsd zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
-    local rhel_packages="make automake gcc gcc-c++ ripgrep fd-find bat lsd zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
-    local arch_packages="base-devel ripgrep fd bat lsd zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
-    local void_packages="base-devel ripgrep fd-find bat lsd zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
-    local brew_packages="ripgrep fd bat lsd zoxide translate-shell glow mdcat viu yt-dlp tealdeer gping jq httpie broot htop"
+    local debian_packages="build-essential ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
+    local rhel_packages="make automake gcc gcc-c++ ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
+    local arch_packages="base-devel ripgrep fd bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
+    local void_packages="base-devel ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop"
+    local brew_packages="ripgrep fd bat eza zoxide translate-shell glow mdcat viu yt-dlp tealdeer gping jq httpie broot htop"
 
     if [[ "$MINIMAL" == "true" ]]; then
         print_info "Minimal mode: skipping translate-shell, yt-dlp, jq, viu"
@@ -372,7 +372,7 @@ install_essentials() {
             return 1
         fi
     else
-         print_warning "Could not install essential tools automatically. Please install these manually: git, curl, wget, build-essential, ripgrep, fd, bat, lsd, zoxide"
+         print_warning "Could not install essential tools automatically. Please install these manually: git, curl, wget, build-essential, ripgrep, fd, bat, eza, zoxide"
          return 1
     fi
     
