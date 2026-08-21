@@ -1060,7 +1060,7 @@ EOF
     echo ""
 
     # 12. Install additional tools
-    print_info "Step 12/12: Installing additional tools (Docker, Zellij, herdr, TPM)"
+    print_info "Step 12/12: Installing additional tools (Docker, Zellij, TPM)"
     run_step "extra tools install" install_extra_tools
     echo ""
 
