@@ -1,221 +1,210 @@
-# dotfiles
+# Public Dotfiles
 
-基于 Zsh + Zinit + 自管 Neovim/lazy.nvim 的终端配置方案，追求快速启动与可控的开发体验。
+Portable Zsh and Neovim environment for terminal-first development.
 
-## 快速开始
+This repository is intentionally public and standalone. It can be cloned and used without Chezmoi. It provides a practical shell, editor, Tmux, file-manager, and terminal workflow while keeping machine-specific credentials and private integrations outside the repository.
 
-### 第一步：克隆仓库
+## What You Get After Cloning
 
-```bash
-git clone https://github.com/iamcheyan/dotfiles ~/dotfiles
-cd ~/dotfiles
-```
+After running the initializer and linking the configuration, you get:
 
-### 第二步：运行初始化脚本
+### Zsh
 
-```bash
-bash init.sh              # 完整安装（推荐）
-bash init.sh --minimal    # 轻量安装（跳过字体、Neovim 等）
-bash init.sh --repair     # 修复损坏的 zinit 插件
-```
-
-初始化脚本会自动完成以下操作：
-- 安装 Zsh 并设置为默认 Shell
-- 安装所有必备工具（git, curl, ripgrep, fd, bat, eza, zoxide 等）
-- 安装 zinit 插件管理器
-- 安装 pyenv（Python 版本管理）
-- 安装 fnm（Fast Node Manager）
-- 安装 fzf（模糊搜索）
-- 安装 direnv（目录级环境变量）
-- 创建配置文件符号链接
-- 安装 Neovim + lazy.nvim 自管配置
-- 安装 Nerd Font 字体
-- 初始化 Ranger 文件管理器配置
-- 安装 Zellij、Codex、Opencode 等额外工具
-
-### 第三步：启动 Zsh
-
-```bash
-zsh
-```
-
-首次启动会自动安装 Starship 主题和所有插件。
-
-## 核心组件
-
-| 组件 | 说明 |
-|------|------|
-| **Shell** | Zsh + Starship |
-| **插件管理** | Zinit（异步加载，极速启动） |
-| **Vim 模式** | zsh-vi-mode |
-| **历史搜索** | Atuin（Ctrl+R） |
-| **编辑器** | Neovim（lazy.nvim，自管配置） |
-| **文件管理** | Ranger（`r` 函数，见 aliases.conf） |
-| **终端多路复用** | Tmux（tmux-persist + tmux-continuum 自动保存/恢复） |
-| **终端模拟器** | Kitty / Ghostty |
-
-## 工具链替换
-
-我们用更现代的工具替换了传统命令：
-
-| 原命令 | 替换工具 | 说明 |
-|--------|----------|------|
-| `ls` | eza | 带颜色和图标的目录列表 |
-| `cat` | bat | 带语法高亮的文件查看 |
-| `find` | fd | 更快的文件查找 |
-| `grep` | ripgrep | 极速文本搜索 |
-| `top` | btop | 美化的系统监控 |
-| `ps` | procs | 更友好的进程查看 |
-| `cd` | zoxide | 智能目录跳转（记住历史路径） |
-
-## Neovim 插件列表
-
-Neovim 配置直接基于 `lazy.nvim`，不导入 LazyVim 发行版。会话保存/恢复由 **auto-session** 插件处理（按 cwd 自动保存和恢复），不依赖 vim-obsession 或 Session.vim。
-
-| 插件 | 功能 |
-|------|------|
-| **aerial** | 代码大纲/符号导航 |
-| **auto-session** | 按 cwd 自动保存/恢复会话（tmux-persist 恢复 nvim 时依赖此插件） |
-| **blink.cmp** | 自动补全 |
-| **bufferline** | 顶部标签栏 |
-| **ccc** | 颜色预览/编辑器 |
-| **conform** | 代码格式化 |
-| **diffview** | Git diff 与文件历史 |
-| **fidget** | LSP 进度提示 |
-| **flash** | 快速跳转 |
-| **gitsigns** | Git 增删改标记和 hunk 操作 |
-| **grug-far** | 全局搜索替换 |
-| **heirline** | 状态栏/窗口栏 |
-| **indent-blankline** | 缩进引导线 |
-| **lsp / lsp-keymaps** | LSP 配置和快捷键 |
-| **mason / mason-lspconfig** | LSP server 安装 |
-| **mini.ai / mini.pairs** | 文本对象和成对符号 |
-| **neo-tree** | 文件浏览器（侧栏） |
-| **oil** | 文件浏览器（buffer 式编辑） |
-| **snacks** | picker、dashboard、notifier 等 UI 工具 |
-| **telescope** | 模糊搜索（配置文件查找 + yanky 剪贴板历史） |
-| **treesitter / treesitter-textobjects** | 语法高亮、折叠、缩进 |
-| **vim-visual-multi** | 多光标编辑 |
-| **vimquest** | 英语单词拼写练习 |
-| **which-key** | 快捷键提示 |
-| **yanky** | 复制/粘贴增强（持久化剪贴板历史） |
-## 目录结构
-
-```
-dotfiles/
-├── zshrc                 # Zsh 主配置
-├── aliases.conf          # 命令别名
-├── init.sh               # 初始化脚本
-├── dotlink/              # 符号链接管理
-│   ├── dotlink           # 链接创建/管理
-│   ├── dotsync           # 同步编排
-│   └── dotlinkrc         # 链接配置
-├── plugins/              # Zinit 插件配置
-│   ├── zinit/            # Zinit 管理器
-│   ├── prompt/           # Starship 提示符主题
-│   ├── tools/            # CLI 工具（基于 as"command" from"gh-r"）
-│   ├── completion/       # 补全配置（zsh-completions + fzf-tab）
-│   ├── plugins/          # Zsh 功能插件（plugins.zsh）
-│   ├── fzf/              # fzf 配置与函数
-│   ├── zellij/           # Zellij 集成
-│   ├── yazi/             # Yazi 主题更新脚本
-│   └── sshfs/            # vssh（fzf 选择 SSH 主机）与 vifm-sshfs 脚本
-├── config/               # 应用配置（指向 ~/.config 下各应用）
-│   ├── nvim/             # Neovim (lazy.nvim self-managed)
-│   ├── ranger/           # Ranger 文件管理器
-│   ├── atuin/            # Atuin 历史搜索
-│   ├── starship/         # Starship 提示符配置
-│   ├── ghostty/          # Ghostty 终端
-│   ├── zellij/           # Zellij
-│   └── tmux/             # Tmux
-├── scripts/              # 自动化脚本
-│   ├── install/          # 安装脚本
-│   ├── dev/              # 开发工具
-│   └── system/           # 系统工具
-├── tools/                # 通用工具脚本
-├── documents/            # 文档/笔记
-└── rime/                 # Rime 输入法配置（独立仓库，不由本项目管理）
-```
-
-## 日常命令
-
-| 命令 | 说明 |
-|------|------|
-| `dotlink` | 链接配置文件到 $HOME |
-| `dotsync` | 同步配置（备份/推送/恢复） |
-| `dp` | 推送 dotfiles 到远程 |
-| `reload` | 重载 zsh 配置 |
-
-## 常用快捷键
-
-### Zsh（Vim 模式）
-
-| 按键 | 说明 |
-|------|------|
-| `Ctrl+R` | 历史命令搜索（Atuin） |
-| `;;` | 切换输入法（SBZR） |
-| `j/k` | 历史命令搜索（上/下） |
+- Zsh startup configuration with safe `TERM`/terminfo fallback.
+- Zsh Vim editing mode.
+- Zinit-based plugin loading.
+- Starship prompt support.
+- Autosuggestions, syntax highlighting, autopair, completion, and `fzf-tab`.
+- Atuin history integration when Atuin is installed.
+- Zoxide directory jumping when Zoxide is installed.
+- Optional WSL Windows-PATH filtering through `WSL_STRIP_WINDOWS_PATH=1`.
+- Portable aliases and helper functions for `eza`, `bat`, `fd`, `ripgrep`, Ranger, Vifm, and Yazi-compatible workflows.
 
 ### Neovim
 
-| 按键 | 说明 |
-|------|------|
-| `<leader>e` | 文件浏览器 |
-| `<leader>ff` | 模糊搜索文件 |
-| `<leader>fg` | 模糊搜索内容 |
-| `<leader>gg` | Git 状态 |
-| `<leader>xx` | 诊断列表 |
-| `gcc` | 注释/取消注释行 |
-| `gc` | 注释/取消注释选中区域 |
+- Standalone `lazy.nvim` setup; it does not depend on LazyVim.
+- LSP and Mason server management.
+- Treesitter syntax highlighting, folding, and text objects.
+- Telescope, Snacks, Neo-tree, Oil, and Flash navigation tools.
+- Blink completion, conform formatting, Gitsigns, Diffview, and Fidget.
+- Heirline statusline and Bufferline tabline.
+- Auto-session persistence by working directory.
+- Yanky clipboard history, mini.ai, mini.pairs, Which-Key, and Vim Visual Multi.
+- Vimquest language-learning plugin and other optional public plugins.
 
-## 自定义配置
+### Tmux
 
-### 添加新插件
+- Tmux configuration with mouse support, RGB/true-color settings, and a compact status bar.
+- Tmux Plugin Manager (TPM), tmux-resurrect, and tmux-continuum integration.
+- Public configuration remains portable; personal AI-agent restore rules are loaded only from an optional private file managed by Chezmoi.
+- A local uncommitted customization may be added to `config/tmux/tmux.conf` without affecting the public baseline.
 
-在 `~/.config/nvim/lua/plugins/` 目录下创建新的 `.lua` 文件：
+### Other Public Configurations
+
+- Ranger with Vim-style navigation and public plugins.
+- Vifm configuration and helper functions.
+- Ghostty configuration.
+- Atuin, Starship, Nano, and related terminal utilities.
+- `dotlink`, a small shell-based symlink manager with no Chezmoi dependency.
+
+## What This Repository Does Not Include
+
+The following remain in the private `iamcheyan/chezmoi` repository:
+
+- Kitty, Yazi, and Zellij configurations.
+- Fcitx5, Rime shell-layer, Karabiner, Sumika Shell, and Bitwarden configuration.
+- AI-agent wrappers, provider configuration, quota tools, and private tmux-agent restore logic.
+- API keys, tokens, `.env` files, credentials, private server addresses, and machine-specific scripts.
+
+The public repository may optionally load `~/.config/aliases.conf` from a user's own system. That file is not part of this repository and is the extension point used by the private Chezmoi configuration.
+
+## Installation
+
+### 1. Clone
+
+```bash
+git clone https://github.com/iamcheyan/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
+### 2. Run the initializer
+
+```bash
+bash init.sh              # Full installation
+bash init.sh --minimal    # Minimal installation
+bash init.sh --repair     # Repair cached Zinit plugins
+```
+
+The initializer detects the host operating system and can install common dependencies such as:
+
+- Git, curl, wget, ripgrep, fd, bat, eza, zoxide, fzf, jq, and related CLI tools.
+- Zsh and the configured shell environment.
+- Neovim and its public lazy.nvim configuration.
+- Python/Node tooling used by the shell setup.
+- Docker on supported Linux distributions.
+- Zellij and Tmux Plugin Manager when available.
+
+Package availability varies by distribution. The script skips unavailable packages and prints warnings instead of assuming every package exists everywhere.
+
+### 3. Create symlinks
+
+```bash
+bash dotlink/dotlink link
+```
+
+The public link set includes:
+
+```text
+~/dotfiles/zshrc                         -> ~/.zshrc
+~/dotfiles/config/nvim                   -> ~/.config/nvim
+~/dotfiles/config/tmux/tmux.conf         -> ~/.tmux.conf
+~/dotfiles/config/ranger                 -> ~/.config/ranger
+~/dotfiles/config/vifm/*                 -> ~/.config/vifm/*
+~/dotfiles/config/ghostty                -> ~/.config/ghostty
+~/dotfiles/config/atuin                  -> ~/.config/atuin
+~/dotfiles/config/starship/starship.toml -> ~/.config/starship.toml
+```
+
+### 4. Start a new shell
+
+```bash
+exec zsh
+```
+
+The first interactive shell may install or cache Zinit-managed plugins. Restart the shell after plugin installation if a newly installed plugin is not immediately available.
+
+## Common Commands
+
+```bash
+bash dotlink/dotlink link       # Create or repair symlinks
+bash init.sh --repair           # Repair Zinit/plugin state
+exec zsh                        # Reload the current shell
+```
+
+Useful aliases are conditionally enabled when their commands exist:
+
+```text
+l / ll / la    eza directory listings
+r              Ranger with cwd handoff
+v              Vifm with cwd handoff
+zi / za / zr   Zoxide helpers
+```
+
+## Repository Layout
+
+```text
+dotfiles/
+├── zshrc                  # Public Zsh entrypoint
+├── aliases.conf           # Public aliases and shell helpers
+├── init.sh                # Cross-platform initializer
+├── dotlink/               # Symlink manager and link manifest
+├── config/
+│   ├── nvim/              # Neovim lazy.nvim configuration
+│   ├── tmux/              # Public Tmux baseline
+│   ├── ranger/            # Ranger configuration
+│   ├── vifm/              # Vifm configuration
+│   ├── ghostty/           # Ghostty configuration
+│   ├── atuin/             # Atuin configuration
+│   └── starship/           # Starship configuration
+├── plugins/               # Public Zsh/plugin helpers
+├── scripts/               # Public installation and utility scripts
+└── tools/                 # Public standalone tools
+```
+
+Kitty, Yazi, and Zellij are deliberately absent here because they are maintained as separate public repositories and embedded as submodules in the private Chezmoi repository:
+
+- https://github.com/iamcheyan/kitty
+- https://github.com/iamcheyan/yazi
+- https://github.com/iamcheyan/zellij
+
+## Customization
+
+### Add a public alias
+
+Edit `aliases.conf`:
+
+```bash
+alias mycommand="original-command"
+```
+
+Then recreate links and reload Zsh:
+
+```bash
+bash dotlink/dotlink link
+exec zsh
+```
+
+### Add a Neovim plugin
+
+Create a Lua file under `config/nvim/lua/plugins/`:
 
 ```lua
 return {
   {
     "author/plugin-name",
     config = function()
-      -- 插件配置
+      -- plugin configuration
     end,
   },
 }
 ```
 
-### 修改别名
+### Keep machine-specific configuration private
 
-编辑 `~/dotfiles/aliases.conf`，添加你的自定义别名：
+Put personal aliases, API-related wrappers, private paths, and provider configuration in your private Chezmoi repository instead of adding them here.
 
-```bash
-alias mycommand="original-command"
-```
-
-然后运行 `reload` 使配置生效。
-
-## 故障排除
-
-### Zinit 插件损坏
+## Checks Before Publishing
 
 ```bash
-bash init.sh --repair
+zsh -n zshrc
+bash -n init.sh
+bash -n aliases.conf
+git diff --check
+git status
 ```
 
-### 重新创建符号链接
+Do not publish `.env`, credentials, private keys, tokens, personal absolute paths, or private network details.
 
-```bash
-dotlink link
-```
-
-### 重置 Neovim 配置
-
-```bash
-rm -rf ~/.config/nvim
-dotlink link
-```
-
-## 许可证
+## License
 
 MIT License
