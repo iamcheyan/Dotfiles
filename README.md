@@ -39,6 +39,18 @@ After running the initializer and linking the configuration, you get:
 - Public configuration remains portable; personal AI-agent restore rules are loaded only from an optional private file managed by Chezmoi.
 - A local uncommitted customization may be added to `config/tmux/tmux.conf` without affecting the public baseline.
 
+### Herdr Local AI Assistant
+
+The initializer installs **Herdr**, a local AI coding assistant designed for terminal workflows. This is a deliberate public feature of this repository:
+
+- `bash init.sh` installs Herdr when it is not already available.
+- `config/herdr/config.toml` provides a small, shareable baseline theme configuration.
+- The configuration is linked to `~/.config/herdr/config.toml` by `dotlink`.
+- No API keys, tokens, conversations, or private provider credentials are stored here.
+- If you do not want Herdr, remove or comment out the Herdr block in `init_extra_tools()` before running the initializer.
+
+Herdr is separate from the private Agent wrappers in Chezmoi: this repository provides only the public installation and baseline configuration.
+
 ### Other Public Configurations
 
 - Ranger with Vim-style navigation and public plugins.
@@ -52,8 +64,7 @@ After running the initializer and linking the configuration, you get:
 The following remain in the private `iamcheyan/chezmoi` repository:
 
 - Kitty, Yazi, and Zellij configurations.
-- Fcitx5, Rime shell-layer, Karabiner, Sumika Shell, and Bitwarden configuration.
-- AI-agent wrappers, provider configuration, quota tools, and private tmux-agent restore logic.
+- Other personal AI-agent wrappers, provider configuration, quota tools, and private tmux-agent restore logic.
 - API keys, tokens, `.env` files, credentials, private server addresses, and machine-specific scripts.
 
 The public repository may optionally load `~/.config/aliases.conf` from a user's own system. That file is not part of this repository and is the extension point used by the private Chezmoi configuration.
@@ -82,7 +93,7 @@ The initializer detects the host operating system and can install common depende
 - Neovim and its public lazy.nvim configuration.
 - Python/Node tooling used by the shell setup.
 - Docker on supported Linux distributions.
-- Zellij and Tmux Plugin Manager when available.
+- Zellij, Herdr, and Tmux Plugin Manager when available.
 
 Package availability varies by distribution. The script skips unavailable packages and prints warnings instead of assuming every package exists everywhere.
 
@@ -102,6 +113,7 @@ The public link set includes:
 ~/dotfiles/config/vifm/*                 -> ~/.config/vifm/*
 ~/dotfiles/config/ghostty                -> ~/.config/ghostty
 ~/dotfiles/config/atuin                  -> ~/.config/atuin
+~/dotfiles/config/herdr/config.toml      -> ~/.config/herdr/config.toml
 ~/dotfiles/config/starship/starship.toml -> ~/.config/starship.toml
 ```
 

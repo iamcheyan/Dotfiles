@@ -1,0 +1,10 @@
+onboarding = false
+
+# [theme]
+# name = "one-dark"
+
+[theme.custom]
+panel_bg = "#000000"
+accent = "#50fa7b"
+green = "#50fa7b"
+

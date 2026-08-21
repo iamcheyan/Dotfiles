@@ -14,6 +14,7 @@ $HOME/dotfiles/config/starship/starship.toml:$HOME/.config/starship.toml	# Stars
 $HOME/dotfiles/config/nano/nanorc:$HOME/.nanorc	# GNU nano 配置文件
 $HOME/dotfiles/config/atuin:$HOME/.config/atuin                          #atuin历史查询工具配置
 $HOME/dotfiles/config/ghostty:$HOME/.config/ghostty                      #ghostty终端配置
+$HOME/dotfiles/config/herdr/config.toml:$HOME/.config/herdr/config.toml  # Herdr configuration
 
 
 # ranger

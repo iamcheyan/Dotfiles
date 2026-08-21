@@ -892,6 +892,15 @@ install_extra_tools() {
     else
         print_success "Zellij is already installed"
     fi
+    # Herdr — local AI coding assistant
+    if ! command_exists herdr; then
+        print_info "Installing Herdr..."
+        curl -fsSL https://herdr.dev/install.sh | sh
+        print_success "Herdr installed successfully"
+    else
+        print_success "Herdr is already installed"
+    fi
+
 
     # Tmux Plugins (TPM)
     if command_exists tmux; then
