@@ -13,8 +13,7 @@
 ---
 
 ## 简介
-
-Ranger 是一个基于 ncurses 的终端文件管理器，具有 vim 风格的操作方式。本配置基于 [Chezmoi](https://www.chezmoi.io/) 进行管理，支持跨机器同步。
+Ranger 是一个基于 ncurses 的终端文件管理器，具有 vim 风格的操作方式。本配置由公开 dotfiles 仓库与 `dotlink` 管理，支持跨机器同步。
 
 ### 主要特性
 
@@ -355,9 +354,9 @@ A: 按 `uq` 恢复最近关闭的标签页。
 
 A: 编辑 `~/.config/ranger/rifle.conf`，按照格式添加规则。
 
-### Q: Chezmoi 同步后配置不生效？
+### Q: Dotlink 同步后配置不生效？
 
-A: 运行 `chezmoi apply` 重新应用配置。
+A: 运行 `bash ~/dotfiles/dotlink/dotlink link` 重新创建配置软链接。
 
 ---
 

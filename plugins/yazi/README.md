@@ -74,7 +74,7 @@ EXTRA_FLAVORS=(
 ✓ 新增: 5 个主题
 ✓ 更新: 15 个主题
 
-ℹ 主题已安装到: /home/tetsuya/dotfiles/config/yazi/flavors
+ℹ 主题已安装到: ~/dotfiles/config/yazi/flavors
 ℹ 使用 'y' 命令启动 yazi 查看效果
 ```
 
