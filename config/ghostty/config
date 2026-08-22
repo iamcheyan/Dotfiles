@@ -1,6 +1,6 @@
 # ===== Font =====
 font-family = MesloLGS Nerd Font Mono
-font-size = 14
+font-size = 12
 
 # ===== Colors (Zellij Green/Dracula) =====
 background = #000000
