@@ -1,71 +1,51 @@
 # Zsh 插件目录
 
-所有 Zsh 插件及其专属配置集中在一个文件：
+Zsh 功能插件及其专属配置集中在：
 
 ```text
 plugins/zsh-plugins.zsh
 ```
 
-这个文件包含：
+文件只保留实际会生效的配置：
 
-- 插件名称、GitHub 仓库、用途和启用状态
-- 所有 `zinit` 加载调用
-- `zsh-autosuggestions`、`zsh-vi-mode`、`fzf-tab` 等插件配置
-- 加载顺序和阶段函数
-- `zsh-plugins` / `plugin-status` 状态检查命令
+- 各插件的 `zinit light` 加载调用
+- 插件专属环境变量、`zstyle` 和 hook
+- 必须遵守的加载顺序
 
-## 查看加载状态
-
-启动 Zsh 后执行：
-
-```zsh
-zsh-plugins
-# 或
-plugin-status
-```
-
-状态含义：
-
-- `loaded`：当前 shell 已实际加载
-- `cached`：已经下载到 Zinit，但当前 shell 未加载
-- `missing`：启用但尚未下载
-
-## 为什么文件内有三个加载阶段
-
-插件仍然全部集中在 `zsh-plugins.zsh`，只是由 `zshrc` 在正确的时机调用：
+## 加载阶段
 
 ```text
 zsh_plugins_load_pre_compinit   zsh-completions
 zsh_plugins_load_post_compinit  fzf-tab + fzf-tab 配置
-zsh_plugins_load_main           其余插件，fast-syntax-highlighting 最后
+zsh_plugins_load_main           其余 Shell 插件；语法高亮最后加载
 ```
 
-这样既能让用户一眼看到完整插件列表，又不会破坏 Zsh 的补全和语法高亮顺序。
+三个阶段只是为了满足 Zsh 的加载顺序，所有 Shell 功能插件和对应配置仍然在同一个文件里。
 
 ## 修改插件
-
-只需要编辑：
 
 ```bash
 $EDITOR ~/dotfiles/plugins/zsh-plugins.zsh
 ```
 
-新增插件时同时完成三件事：
+新增插件时：
 
-1. 加入 `_ZSH_PLUGIN_ORDER`。
-2. 加入名称和用途说明。
-3. 在对应阶段的函数中加入 `_zsh_plugin_light owner/repo` 及其配置。
+1. 在对应加载阶段加入真实的 `zinit light owner/repo`。
+2. 在调用附近写清楚插件作用。
+3. 把该插件的环境变量、`zstyle` 和 hook 配置放在同一处。
 
 检查：
 
 ```bash
-zsh -n ./zshrc
-zsh -n ./plugins/zsh-plugins.zsh
+zsh -d -n ./plugins/zsh-plugins.zsh
+TERM=xterm-256color zsh -lic 'source ./zshrc >/dev/null 2>&1; true'
 git diff --check
 ```
 
-## 非 Shell 插件
+## 其他 Zinit 配置
 
-`plugins/tools/tools.zsh` 中的 btop、bat、fd、ripgrep、atuin 等是通过 Zinit 下载的 CLI 工具，不是 Zsh 功能插件，因此继续单独管理。
+CLI 工具和 Prompt 不是 Zsh 功能插件，保持在各自的有效配置文件中：
 
-`plugins/prompt/prompt.zsh` 中的 Starship 也属于 Prompt/CLI 工具层，不计入 Shell 插件清单。
+- `plugins/tools/tools.zsh`：btop、bat、fd、ripgrep、atuin 等命令行工具
+- `plugins/prompt/prompt.zsh`：Starship Prompt
+- `plugins/fzf/fzf.zsh`：fzf 函数和本地系统集成
