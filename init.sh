@@ -556,7 +556,7 @@ install_fzf() {
     fi
 }
 
-# Initialize git submodules (e.g. VimQuest.nvim)
+# Initialize public git submodules
 init_git_submodules() {
     local dotfiles_dir="${DOTFILES_DIR:-$HOME/dotfiles}"
     if [[ -f "$dotfiles_dir/.gitmodules" ]]; then

@@ -31,20 +31,6 @@ return {
       -- 空会话自动删除
       auto_delete_empty_sessions = true,
 
-      -- 不把 VimQuest 临时题目 buffer 写进 session，避免下次启动恢复已删除的缓存文件。
-      pre_save_cmds = {
-        function()
-          local prefix = vim.fn.expand("~/.cache/vimquest/session-")
-          for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-            local name = vim.api.nvim_buf_get_name(bufnr)
-            if name:sub(1, #prefix) == prefix then
-              pcall(vim.api.nvim_set_option_value, "modified", false, { buf = bufnr })
-              pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
-            end
-          end
-        end,
-      },
-
       -- session_lens 配置（会话选择器）
       session_lens = {
         picker = nil, -- 自动检测 telescope/snacks/fzf
