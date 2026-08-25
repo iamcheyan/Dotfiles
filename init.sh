@@ -801,7 +801,7 @@ install_docker() {
             sudo apt-get install -y ca-certificates curl gnupg || true
             sudo install -m 0755 -d /etc/apt/keyrings
 
-            # 从 /etc/os-release 读取发行版 ID（debian / ubuntu / linuxmint ...）
+            # Read the distribution ID from /etc/os-release (debian / ubuntu / linuxmint ...)
             local distro_id
             distro_id=$(. /etc/os-release && echo "$ID")
 
@@ -811,7 +811,7 @@ install_docker() {
             fi
             local codename
             codename=$(. /etc/os-release && echo "${VERSION_CODENAME}")
-            # Docker 不支持 Debian testing/unstable，使用 bookworm 代替
+            # Docker does not support Debian testing/unstable; use bookworm instead
             if [[ "$distro_id" == "debian" && "$codename" != "bookworm" && "$codename" != "bullseye" && "$codename" != "buster" ]]; then
                 codename="bookworm"
             fi

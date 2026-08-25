@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# zellij 安装脚本
-# zellij 是一个终端多路复用器（类似 tmux）
-# 用法: install_zellij.sh [--method cargo|binary] [--force]
+# zellij installation script
+# zellij is a terminal multiplexer (similar to tmux)
+# Usage: install_zellij.sh [--method cargo|binary] [--force]
 
-# 颜色定义
+# Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# 打印带颜色的消息
+# Print colored messages
 print_info() {
     echo -e "${BLUE}ℹ${NC} $1"
 }
@@ -28,7 +28,7 @@ print_error() {
     echo -e "${RED}✗${NC} $1"
 }
 
-# 检测架构
+# Detect the architecture
 detect_arch() {
     ARCH=$(uname -m)
     case "$ARCH" in
@@ -39,63 +39,63 @@ detect_arch() {
             ARCH="aarch64"
             ;;
         *)
-            print_warning "未识别的架构: $ARCH，默认使用 x86_64"
+            print_warning "Unrecognized architecture: $ARCH; defaulting to x86_64"
             ARCH="x86_64"
             ;;
     esac
     echo "$ARCH"
 }
 
-# 检查命令是否存在
+# Check whether a command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# 检查是否已安装
+# Check whether zellij is already installed
 check_installed() {
     if command_exists zellij; then
-        print_success "zellij 已安装: $(zellij --version 2>/dev/null || echo '未知版本')"
+        print_success "zellij is installed: $(zellij --version 2>/dev/null || echo 'unknown version')"
         return 0
     fi
     return 1
 }
 
-# 使用 cargo 安装
+# Install with cargo
 install_with_cargo() {
     if ! command_exists cargo; then
-        print_error "未找到 cargo，请先安装 Rust"
+        print_error "cargo not found; install Rust first"
         return 1
     fi
 
-    # 检查是否已安装
+    # Check whether it is already installed
     local was_installed=false
     if command_exists zellij; then
         was_installed=true
-        print_info "检测到已安装的版本: $(zellij --version 2>/dev/null || echo '未知')"
+        print_info "Installed version detected: $(zellij --version 2>/dev/null || echo 'unknown')"
     fi
 
-    print_info "正在使用 cargo 安装 zellij（这可能需要几分钟）..."
+    print_info "Installing zellij with cargo (this may take a few minutes)..."
     cargo install zellij
 
     if [ $? -eq 0 ]; then
-        print_success "zellij 安装成功！"
+        print_success "zellij installed successfully!"
         return 0
     else
         if [ "$was_installed" = "true" ]; then
-            print_warning "重新安装失败，但之前的版本仍然可用"
-            print_info "当前版本: $(zellij --version 2>/dev/null || echo '未知')"
-            print_info "如果编译失败（如 SIGKILL），可能是内存不足或系统资源限制"
-            print_info "可以尝试使用二进制文件安装: install:zellij --method binary"
-            return 0  # 返回成功，因为旧版本仍然可用
+            print_warning "Reinstallation failed, but the previous version is still available"
+            print_info "Current version: $(zellij --version 2>/dev/null || echo 'unknown')"
+            print_info "If compilation fails (for example, SIGKILL), you may be out of memory or hitting system resource limits"
+            print_info "Try installing from a binary instead: install:zellij --method binary"
+            return 0  # Return success because the old version is still available
         else
-            print_error "cargo 安装失败"
-            print_info "可以尝试使用二进制文件安装: install:zellij --method binary"
+            print_error "cargo installation failed"
+            print_info "Try installing from a binary instead: install:zellij --method binary"
             return 1
         fi
     fi
 }
 
-# 使用二进制文件安装
+# Install from a binary
 install_with_binary() {
     ARCH=$(detect_arch)
     VERSION=$(curl -s https://api.github.com/repos/zellij-org/zellij/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' || echo "v0.40.0")
@@ -105,63 +105,63 @@ install_with_binary() {
     TEMP_DIR="/tmp/zellij-install"
     BIN_DIR="$HOME/.local/bin"
 
-    print_info "检测到架构: $ARCH"
-    print_info "最新版本: $VERSION"
-    print_info "下载 URL: $DOWNLOAD_URL"
+    print_info "Detected architecture: $ARCH"
+    print_info "Latest version: $VERSION"
+    print_info "Download URL: $DOWNLOAD_URL"
 
-    # 创建临时目录
+    # Create the temporary directory
     mkdir -p "$TEMP_DIR"
     mkdir -p "$BIN_DIR"
 
-    # 下载
-    print_info "正在下载 zellij..."
+    # Download
+    print_info "Downloading zellij..."
     if command_exists curl; then
         curl -L "$DOWNLOAD_URL" -o "$TEMP_DIR/zellij.tar.gz"
     elif command_exists wget; then
         wget "$DOWNLOAD_URL" -O "$TEMP_DIR/zellij.tar.gz"
     else
-        print_error "需要 curl 或 wget 来下载文件"
+        print_error "curl or wget is required to download the file"
         return 1
     fi
 
     if [ ! -f "$TEMP_DIR/zellij.tar.gz" ]; then
-        print_error "下载失败"
+        print_error "Download failed"
         return 1
     fi
 
-    # 解压
-    print_info "正在解压..."
+    # Extract
+    print_info "Extracting..."
     cd "$TEMP_DIR"
     tar -xzf zellij.tar.gz
 
-    # 安装
+    # Install
     if [ -f "$TEMP_DIR/zellij" ]; then
         cp "$TEMP_DIR/zellij" "$BIN_DIR/zellij"
         chmod +x "$BIN_DIR/zellij"
-        print_success "zellij 已安装到: $BIN_DIR/zellij"
+        print_success "zellij installed at: $BIN_DIR/zellij"
         
-        # 检查 PATH
+        # Check PATH
         if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
-            print_warning "$BIN_DIR 不在 PATH 中"
-            print_info "请将以下内容添加到 ~/.zshrc 或 ~/.bashrc:"
+            print_warning "$BIN_DIR is not in PATH"
+            print_info "Add the following to ~/.zshrc or ~/.bashrc:"
             echo "  export PATH=\"\$HOME/.local/bin:\$PATH\""
         fi
         
-        # 清理
+        # Clean up
         rm -rf "$TEMP_DIR"
         return 0
     else
-        print_error "解压后未找到 zellij 二进制文件"
+        print_error "zellij binary not found after extraction"
         return 1
     fi
 }
 
-# 主函数
+# Main function
 main() {
     INSTALL_METHOD="auto"
     FORCE=false
 
-    # 解析参数
+    # Parse arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
             --method)
@@ -173,29 +173,29 @@ main() {
                 shift
                 ;;
             *)
-                print_error "未知参数: $1"
-                echo "用法: $0 [--method cargo|binary] [--force]"
+                print_error "Unknown option: $1"
+                echo "Usage: $0 [--method cargo|binary] [--force]"
                 exit 1
                 ;;
         esac
     done
 
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-    echo -e "${GREEN}正在安装 zellij...${NC}"
+    echo -e "${GREEN}Installing zellij...${NC}"
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
 
-    # 检查是否已安装
+    # Check whether it is already installed
     if check_installed && [ "$FORCE" != "true" ]; then
-        read -p "zellij 已安装，是否重新安装？(y/N): " -n 1 -r
+        read -p "zellij is installed; reinstall it? (y/N): " -n 1 -r
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            print_info "已取消安装"
+            print_info "Installation canceled"
             exit 0
         fi
     fi
 
-    # 选择安装方法
+    # Choose the installation method
     if [ "$INSTALL_METHOD" = "auto" ]; then
         if command_exists cargo; then
             INSTALL_METHOD="cargo"
@@ -212,7 +212,7 @@ main() {
             install_with_binary
             ;;
         *)
-            print_error "未知的安装方法: $INSTALL_METHOD"
+            print_error "Unknown installation method: $INSTALL_METHOD"
             exit 1
             ;;
     esac
@@ -220,28 +220,28 @@ main() {
     if [ $? -eq 0 ]; then
         echo ""
         echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-        echo -e "${GREEN}✅ zellij 安装完成！${NC}"
+        echo -e "${GREEN}✅ zellij installation complete!${NC}"
         echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
         echo ""
-        echo -e "${YELLOW}📋 使用说明：${NC}"
+        echo -e "${YELLOW}📋 Usage:${NC}"
         echo ""
-        echo "启动 zellij:"
+        echo "Start zellij:"
         echo "  zellij"
         echo ""
-        echo "查看帮助:"
+        echo "Show help:"
         echo "  zellij --help"
         echo ""
-        echo "快捷键（默认）:"
-        echo "  Ctrl+g  - 进入命令模式"
-        echo "  Ctrl+o  - 切换窗格"
-        echo "  Alt+n    - 新建标签页"
+        echo "Keyboard shortcuts (default):"
+        echo "  Ctrl+g  - Enter command mode"
+        echo "  Ctrl+o  - Switch panes"
+        echo "  Alt+n    - Create a new tab"
         echo ""
-        echo -e "${YELLOW}💡 提示：${NC}"
-        echo "  如果命令未找到，请确保 ~/.local/bin 或 ~/.cargo/bin 在 PATH 中"
-        echo "  重新加载 shell 配置: source ~/.zshrc"
+        echo -e "${YELLOW}💡 Tip:${NC}"
+        echo "  If the command is not found, make sure ~/.local/bin or ~/.cargo/bin is in PATH"
+        echo "  Reload the shell configuration: source ~/.zshrc"
         echo ""
     else
-        print_error "安装失败"
+        print_error "Installation failed"
         exit 1
     fi
 }

@@ -216,6 +216,6 @@ run_pre_commit_check() {
 }
 
 run_pre_push_check() {
-  # pre-push 不做隐私检查，只在 pre-commit 时检查
+  # pre-push does not run privacy checks; they run only during pre-commit
   exit 0
 }

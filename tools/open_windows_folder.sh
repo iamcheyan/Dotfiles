@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
-# WSLからWindowsのexplorer.exeでフォルダを開くスクリプト
+# Open a folder in Windows Explorer from WSL
 
 set -eo pipefail
 
-# 引数チェック
+# Validate arguments
 if [[ $# -eq 0 ]]; then
-  # 引数がない場合は現在のディレクトリをWindowsパスに変換
+  # Convert the current directory to a Windows path when no argument is given
   folder_path=$(wslpath -w "$PWD")
 else
-  # すべての引数をスペースで結合して1つのパスとして扱う
-  # クォートなしで実行された場合、複数の引数が渡される可能性があるため
+  # Join all arguments with spaces and treat them as one path.
+  # Unquoted invocation may pass a path as multiple arguments.
   IFS=' '
   folder_path="$*"
 fi
 
-# explorer.exeでフォルダを開く
-echo "フォルダを開いています: ${folder_path}"
+# Open the folder with explorer.exe
+echo "Opening folder: ${folder_path}"
 explorer.exe "${folder_path}"
 

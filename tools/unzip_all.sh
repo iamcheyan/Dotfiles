@@ -1,20 +1,20 @@
 #!/bin/bash
 
-# 遍历当前目录下所有 zip 文件
+# Iterate over all zip files in the current directory
 for f in *.zip; do
-  # 如果没有匹配到 zip 文件，避免报错
+  # Avoid errors when no zip files match
   [ -e "$f" ] || continue
 
-  # 去掉 .zip 后缀作为目录名
+  # Use the name without the .zip suffix as the directory name
   dir="${f%.zip}"
 
-  # 创建目录（如果不存在）
+  # Create the directory if it does not exist
   mkdir -p "$dir"
 
-  # 解压到对应目录（-n 表示不覆盖已存在文件）
+  # Extract into the corresponding directory (-n means do not overwrite existing files)
   unzip -n "$f" -d "$dir"
 
-  echo "已解压: $f -> $dir/"
+  echo "Extracted: $f -> $dir/"
 done
 
-echo "全部解压完成"
+echo "Extraction complete"

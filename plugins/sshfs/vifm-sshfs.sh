@@ -125,7 +125,7 @@ if [ -z "$HOST_ALIAS" ]; then
 	HOST_ALIAS="$(choose_ssh_host)"
 fi
 
-# 修复 ~ 问题
+# Fix the ~ path issue
 [ "$REMOTE_PATH" = "~" ] && REMOTE_PATH="."
 
 MOUNT_NAME="$(sanitize_mount_name "$HOST_ALIAS")"

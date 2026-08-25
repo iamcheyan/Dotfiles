@@ -1,136 +1,136 @@
 #!/bin/bash
-# 字体安装脚本
-# 支持 Meslo 字体和 Noto Serif 字体安装
-# 用法: install_font.sh [--meslo] [--noto] [--all] [--force]
+# Font installation script
+# Supports installing Meslo and Noto Serif fonts
+# Usage: install_font.sh [--meslo] [--noto] [--all] [--force]
 
-# Meslo 字体下载链接
+# Meslo font download URL
 MESLO_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.tar.xz"
 MESLO_TAR="$HOME/.cache/fonts/Meslo.tar.xz"
 MESLO_VERSION="v3.4.0"
 
-# 下载 Meslo 字体的函数
+# Download the Meslo font
 download_meslo_font() {
   local cache_dir=$(dirname "$MESLO_TAR")
 
-  # 创建缓存目录
+  # Create the cache directory
   mkdir -p "$cache_dir"
 
-  # 检查文件是否已存在
+  # Check whether the file already exists
   if [ -f "$MESLO_TAR" ]; then
-    echo "Meslo 字体文件已存在，跳过下载"
+    echo "Meslo font file already exists; skipping download"
     return 0
   fi
 
-  echo "正在从 GitHub 下载 Meslo 字体 ($MESLO_VERSION)..."
+  echo "Downloading Meslo font from GitHub ($MESLO_VERSION)..."
 
-  # 使用 wget 或 curl 下载
+  # Use wget or curl to download
   if command -v wget >/dev/null 2>&1; then
     if wget -q --show-progress -O "$MESLO_TAR" "$MESLO_URL"; then
-      echo "✓ Meslo 字体下载完成"
+      echo "✓ Meslo font downloaded"
       return 0
     else
-      echo "错误: 下载 Meslo 字体失败" >&2
+      echo "Error: failed to download Meslo font" >&2
       return 1
     fi
   elif command -v curl >/dev/null 2>&1; then
     if curl -L -o "$MESLO_TAR" "$MESLO_URL"; then
-      echo "✓ Meslo 字体下载完成"
+      echo "✓ Meslo font downloaded"
       return 0
     else
-      echo "错误: 下载 Meslo 字体失败" >&2
+      echo "Error: failed to download Meslo font" >&2
       return 1
     fi
   else
-    echo "错误: 未找到 wget 或 curl 命令" >&2
+    echo "Error: neither wget nor curl was found" >&2
     return 1
   fi
 }
 
-# 安装 Meslo 字体的函数
+# Install the Meslo font
 install_meslo_font() {
-  # 先下载字体文件
+  # Download the font file first
   if ! download_meslo_font; then
     return 1
   fi
 
-  # 检查文件是否存在
+  # Check whether the file exists
   if [ ! -f "$MESLO_TAR" ]; then
-    echo "错误: 未找到 Meslo 字体压缩包：$MESLO_TAR" >&2
+    echo "Error: Meslo font archive not found: $MESLO_TAR" >&2
     return 1
   fi
 
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    # Linux 系统字体安装
+    # Install fonts on Linux
     FONTS_DIR="$HOME/.fonts"
     mkdir -p "$FONTS_DIR"
 
-    echo "正在解压 Meslo 字体..."
+    echo "Extracting Meslo font..."
     if tar -xJf "$MESLO_TAR" -C "$FONTS_DIR" 2>/dev/null; then
       if command -v fc-cache >/dev/null 2>&1; then
-        echo "正在刷新字体缓存..."
+        echo "Refreshing font cache..."
         fc-cache -fv "$FONTS_DIR" >/dev/null 2>&1
-        echo "✓ Meslo 字体已安装到 $FONTS_DIR 并刷新了字体缓存"
+        echo "✓ Meslo font installed in $FONTS_DIR and font cache refreshed"
       else
-        echo "✓ Meslo 字体已安装到 $FONTS_DIR"
-        echo "警告: 未找到 fc-cache，请手动刷新字体缓存"
+        echo "✓ Meslo font installed in $FONTS_DIR"
+        echo "Warning: fc-cache not found; refresh the font cache manually"
       fi
       return 0
     else
-      echo "错误: 解压字体文件失败" >&2
+      echo "Error: failed to extract font files" >&2
       return 1
     fi
   elif [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS 系统字体安装
+    # Install fonts on macOS
     FONTS_DIR="$HOME/Library/Fonts"
     mkdir -p "$FONTS_DIR"
 
-    echo "正在解压 Meslo 字体..."
+    echo "Extracting Meslo font..."
     if tar -xJf "$MESLO_TAR" -C "$FONTS_DIR" 2>/dev/null; then
-      echo "✓ Meslo 字体已安装到 $FONTS_DIR"
-      echo "在 macOS 上，字体会自动加载，无需手动刷新缓存。"
+      echo "✓ Meslo font installed in $FONTS_DIR"
+      echo "On macOS, fonts load automatically; no manual cache refresh is needed."
       return 0
     else
-      echo "错误: 解压字体文件失败" >&2
+      echo "Error: failed to extract font files" >&2
       return 1
     fi
   else
-    echo "错误: 不支持的操作系统类型：$OSTYPE" >&2
+    echo "Error: unsupported operating system: $OSTYPE" >&2
     return 1
   fi
 }
 
-# 安装 Noto Serif 字体的函数
+# Install the Noto Serif font
 install_noto_font() {
-  echo "正在从 GitHub 拉取字体仓库..."
+  echo "Fetching the font repository from GitHub..."
 
-  # 定义目标目录
+  # Define the target directory
   fonts_dir="$HOME/.cache/fonts"
 
-  # 检查目录是否存在，如果不存在则创建
+  # Check whether the directory exists; create it if necessary
   if [ ! -d "$fonts_dir" ]; then
     mkdir -p "$fonts_dir"
   fi
 
-  # 拉取或更新仓库
+  # Clone or update the repository
   if [ -d "$fonts_dir/.git" ]; then
-    echo "字体仓库已存在，正在更新..."
+    echo "Font repository already exists; updating..."
     git -C "$fonts_dir" pull
   else
-    echo "正在克隆字体仓库..."
+    echo "Cloning the font repository..."
     git clone https://github.com/iamcheyan/fonts.git "$fonts_dir"
   fi
 
-  # 检查操作是否成功
+  # Check whether the operation succeeded
   if [ $? -ne 0 ]; then
-    echo "警告: 拉取字体仓库时出错，继续使用下载方式" >&2
+    echo "Warning: error fetching the font repository; continuing with the download method" >&2
   else
-    echo "字体仓库已成功拉取到 $fonts_dir"
+    echo "Font repository successfully fetched to $fonts_dir"
   fi
 
-  # 下载 Noto Serif CJK 和 Noto Serif 字体
-  echo "正在下载 Noto Serif 字体..."
+  # Download Noto Serif CJK and Noto Serif fonts
+  echo "Downloading Noto Serif fonts..."
 
-  # 定义下载链接数组
+  # Define the download URL array
   download_links=(
     "https://github.com/notofonts/noto-cjk/releases/download/Serif2.003/07_NotoSerifCJKjp.zip"
     "https://github.com/notofonts/noto-cjk/releases/download/Serif2.003/12_NotoSerifJP.zip"
@@ -138,82 +138,82 @@ install_noto_font() {
     "https://github.com/notofonts/noto-cjk/releases/download/Serif2.003/14_NotoSerifSC.zip"
   )
 
-  # 遍历下载链接并下载文件
+  # Download each URL
   for link in "${download_links[@]}"; do
     filename=$(basename "$link")
     if [ -f "$fonts_dir/$filename" ]; then
-      echo "文件已存在，跳过下载: $filename"
+      echo "File already exists; skipping download: $filename"
     else
       if command -v wget >/dev/null 2>&1; then
         if wget -q --show-progress -P "$fonts_dir" "$link"; then
-          echo "成功下载: $filename"
+          echo "Downloaded successfully: $filename"
         else
-          echo "下载失败: $filename" >&2
+          echo "Download failed: $filename" >&2
         fi
       elif command -v curl >/dev/null 2>&1; then
         if curl -L -o "$fonts_dir/$filename" "$link"; then
-          echo "成功下载: $filename"
+          echo "Downloaded successfully: $filename"
         else
-          echo "下载失败: $filename" >&2
+          echo "Download failed: $filename" >&2
         fi
       else
-        echo "错误: 未找到 wget 或 curl 命令" >&2
+        echo "Error: neither wget nor curl was found" >&2
         return 1
       fi
     fi
   done
 
-  echo "Noto Serif 字体下载完成"
+  echo "Noto Serif fonts downloaded"
 
-  # 安装字体
-  echo "正在安装字体..."
+  # Install the fonts
+  echo "Installing fonts..."
 
-  # 解压所有 zip 文件
-  echo "正在解压字体文件..."
+  # Extract all zip files
+  echo "Extracting font files..."
   if command -v unzip >/dev/null 2>&1; then
     find "$fonts_dir" -name "*.zip" -exec unzip -q -o {} -d "$fonts_dir" \;
     if [ $? -eq 0 ]; then
-      echo "所有字体文件已成功解压"
+      echo "All font files extracted successfully"
     else
-      echo "解压字体文件时出错" >&2
+      echo "Error extracting font files" >&2
       return 1
     fi
   else
-    echo "错误: 未找到 unzip 命令" >&2
+    echo "Error: unzip was not found" >&2
     return 1
   fi
 
-  # 复制字体文件到 $HOME/.fonts 目录
-  echo "正在复制字体文件..."
+  # Copy font files to the $HOME/.fonts directory
+  echo "Copying font files..."
   mkdir -p "$HOME/.fonts"
   find "$fonts_dir" -type f \( -name "*.ttc" -o -name "*.ttf" -o -name "*.otf" \) -exec cp -f {} "$HOME/.fonts" \;
 
-  # 整理 $HOME/.fonts 目录
-  echo "正在整理字体文件..."
+  # Organize the $HOME/.fonts directory
+  echo "Organizing font files..."
   find "$HOME/.fonts" -type f \( -name "*.ttc" -o -name "*.ttf" -o -name "*.otf" \) -exec mv -f {} "$HOME/.fonts" \;
   find "$HOME/.fonts" -type d -empty -delete
-  echo "字体文件整理完成"
+  echo "Font files organized"
 
-  # 清除字体缓存
+  # Clear the font cache
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v fc-cache >/dev/null 2>&1; then
-      echo "正在清除字体缓存..."
+      echo "Clearing the font cache..."
       fc-cache -f -v
     else
-      echo "警告: 未找到 fc-cache，请手动刷新字体缓存"
+      echo "Warning: fc-cache not found; refresh the font cache manually"
     fi
   fi
 
-  echo "Noto Serif 字体安装完成"
+  echo "Noto Serif fonts installed"
 }
 
-# 检查是否已安装 Meslo 字体
+# Check whether the Meslo font is installed
 check_meslo_installed() {
   if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if command -v fc-list >/dev/null 2>&1 && fc-list | grep -qi "meslo" 2>/dev/null; then
       return 0
     fi
-    # 检查字体文件是否存在
+    # Check whether font files exist
     if [ -d "$HOME/.fonts" ] && find "$HOME/.fonts" -name "*Meslo*" -o -name "*meslo*" 2>/dev/null | grep -q .; then
       return 0
     fi
@@ -225,13 +225,13 @@ check_meslo_installed() {
   return 1
 }
 
-# 主函数
+# Main function
 main() {
   local install_meslo=false
   local install_noto=false
   local force=false
 
-  # 解析参数
+  # Parse arguments
   while [[ $# -gt 0 ]]; do
     case "$1" in
     --meslo | -m)
@@ -252,66 +252,66 @@ main() {
       shift
       ;;
     *)
-      echo "未知参数: $1" >&2
-      echo "用法: $0 [--meslo] [--noto] [--all] [--force]" >&2
+      echo "Unknown option: $1" >&2
+      echo "Usage: $0 [--meslo] [--noto] [--all] [--force]" >&2
       exit 1
       ;;
     esac
   done
 
-  # 如果没有指定字体类型，默认安装 Meslo（保持向后兼容）
+  # If no font type is specified, install Meslo by default (for backward compatibility)
   if [ "$install_meslo" = false ] && [ "$install_noto" = false ]; then
     install_meslo=true
   fi
 
-  # 安装 Meslo 字体
+  # Install the Meslo font
   if [ "$install_meslo" = true ]; then
     if check_meslo_installed; then
       if [ "$force" = true ]; then
-        echo "Meslo 字体已安装，但在强制模式下，将重新安装..."
+        echo "Meslo font is installed, but will be reinstalled in force mode..."
         install_meslo_font
       else
-        echo "✓ Meslo 字体已安装，跳过安装"
+        echo "✓ Meslo font is installed; skipping installation"
       fi
     else
-      # 未安装的情况
+      # If it is not installed
       if [ "$force" = false ] && [ -t 0 ]; then
-        # 交互模式：询问是否安装
-        # 为了配合 init.sh 的自动化体验，这里也可以改进
-        # 但目前保持询问逻辑，或默认为 Yes
-        read -p "是否要安装 Meslo 字体？(Y/n): " -n 1 -r
+        # Interactive mode: ask whether to install
+        # This can also be improved for init.sh's automated experience
+        # but for now, keep the prompt logic or default to Yes
+        read -p "Install the Meslo font? (Y/n): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Nn]$ ]]; then
-          echo "已跳过 Meslo 字体安装"
+          echo "Skipped Meslo font installation"
         else
           install_meslo_font
         fi
       else
-        # 非交互模式或强制模式：直接安装
+        # Non-interactive or force mode: install directly
         install_meslo_font
       fi
     fi
   fi
 
-  # 安装 Noto Serif 字体
+  # Install the Noto Serif font
   if [ "$install_noto" = true ]; then
     if [ "$force" = false ] && [ -t 0 ]; then
-      # 交互模式
-      read -p "是否要安装 Noto Serif 字体？(y/N): " -n 1 -r
+      # Interactive mode
+      read -p "Install the Noto Serif font? (y/N): " -n 1 -r
       echo
       if [[ $REPLY =~ ^[Yy]$ ]]; then
         install_noto_font
       else
-        echo "已跳过 Noto Serif 字体安装"
+        echo "Skipped Noto Serif font installation"
       fi
     else
-      # 非交互模式或强制模式
+      # Non-interactive or force mode
       install_noto_font
     fi
   fi
 }
 
-# 如果作为脚本运行，执行主函数
+# Run the main function when invoked as a script
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
   main "$@"
 fi

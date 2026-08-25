@@ -1,61 +1,61 @@
 #!/bin/bash
 # ==========================================
-# WSL 全盘清理脚本
-# 清理 Rust, Python, apt, Snap, 日志, 临时文件
+# WSL full-system cleanup script
+# Clean Rust, Python, apt, Snap, logs, and temporary files
 # ==========================================
 
-echo "===== 开始 WSL 清理 ====="
+echo "===== Starting WSL cleanup ====="
 
-# 1️⃣ 清理 Cargo 缓存
+# 1️⃣ Clean Cargo cache
 if command -v cargo >/dev/null 2>&1; then
-    echo ">>> 清理 Cargo 缓存"
+    echo ">>> Cleaning Cargo cache"
     cargo cache -a
 fi
 
-# 2️⃣ 清理 Rust 工具链旧版本
+# 2️⃣ Clean up old Rust toolchains
 if command -v rustup >/dev/null 2>&1; then
-    echo ">>> 清理 Rust 旧工具链"
-    rustup cleanup -y 2>/dev/null || echo "⚠️ rustup cleanup 失败，请手动执行 rustup cleanup"
+    echo ">>> Cleaning old Rust toolchains"
+    rustup cleanup -y 2>/dev/null || echo "⚠️ rustup cleanup failed; run rustup cleanup manually"
 fi
 
-# 3️⃣ 清理 pip 缓存
+# 3️⃣ Clean pip cache
 if command -v pip >/dev/null 2>&1; then
-    echo ">>> 清理 pip 缓存"
+    echo ">>> Cleaning pip cache"
     rm -rf ~/.cache/pip
 fi
 
-# 4️⃣ 清理 apt 缓存和未使用包
+# 4️⃣ Clean apt cache and unused packages
 if command -v apt >/dev/null 2>&1; then
-    echo ">>> 清理 apt 缓存"
+    echo ">>> Cleaning apt cache"
     sudo apt clean
     sudo apt autoremove -y
 fi
 
-# 5️⃣ 清理 journal 日志（只保留最近3天）
+# 5️⃣ Clean journal logs (keep only the last 3 days)
 if command -v journalctl >/dev/null 2>&1; then
-    echo ">>> 清理系统日志"
+    echo ">>> Cleaning system logs"
     sudo journalctl --vacuum-time=3d
 fi
 
-# 6️⃣ 清理 Snap 缓存
+# 6️⃣ Clean Snap cache
 if command -v snap >/dev/null 2>&1; then
-    echo ">>> 清理 Snap 缓存"
+    echo ">>> Cleaning Snap cache"
     sudo du -hx /var/lib/snapd/snaps 2>/dev/null | sort -hr | head -n 10
-    # 可选：删除旧版本
-    # sudo snap remove <旧版本包名>
+    # Optional: remove old versions
+    # sudo snap remove <old-package-name>
 fi
 
-# 7️⃣ 清理临时文件
-echo ">>> 清理 /tmp 目录"
+# 7️⃣ Clean temporary files
+echo ">>> Cleaning /tmp directory"
 sudo rm -rf /tmp/*
 
-# 8️⃣ 查找大文件（>500MB）
-echo ">>> 列出大于500MB的文件（不跨 /mnt）"
+# 8️⃣ Find large files (>500MB)
+echo ">>> List files larger than 500MB (do not cross /mnt)"
 sudo find / -xdev -type f -size +500M 2>/dev/null | sort -hr | head -n 20
 
-# 9️⃣ 输出各目录占用情况
-echo ">>> 各顶级目录占用情况（不跨 /mnt）"
+# 9️⃣ Show disk usage by directory
+echo ">>> Show disk usage for top-level directories (do not cross /mnt)"
 sudo du -hx --max-depth=1 / 2>/dev/null | sort -hr
 
 
-echo "===== 清理完成 ====="
+echo "===== Cleanup complete ====="

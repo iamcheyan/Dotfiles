@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 実行した場所を基準に、すべての .zip を再帰的に展開する
+# Recursively extract every .zip relative to the current working directory
 
 set -euo pipefail
 
@@ -16,17 +16,17 @@ find "$BASE_DIR" -type f -name '*.zip' -print0 | while IFS= read -r -d '' zip_fi
   unzip -n -d "$dir" "$zip_file"
 done
 #!/usr/bin/env bash
-# 実行したカレントディレクトリ以下の .zip をすべて再帰的に展開する
+# Recursively extract every .zip under the current working directory
 
 set -euo pipefail
 
-# unzip の存在を確認
+# Check that unzip is available
 if ! command -v unzip >/dev/null 2>&1; then
   echo "Error: unzip is not installed." >&2
   exit 1
 fi
 
-# 現在のディレクトリを基準に検索
+# Search relative to the current working directory
 BASE_DIR="$(pwd)"
 
 find "$BASE_DIR" -type f -name '*.zip' -print0 | while IFS= read -r -d '' zip_file; do
@@ -35,12 +35,12 @@ find "$BASE_DIR" -type f -name '*.zip' -print0 | while IFS= read -r -d '' zip_fi
   unzip -n -d "$dir" "$zip_file"
 done
 #!/usr/bin/env bash
-# カレントディレクトリ以下の .zip を再帰的に検索し、
-# 各 zip と同名のディレクトリを作成してその中に展開する
+# Recursively find .zip files under the current working directory and
+# Create a directory next to each zip and extract the archive into it
 
 set -euo pipefail
 
-# unzip チェック
+# Verify unzip
 if ! command -v unzip >/dev/null 2>&1; then
   echo "Error: unzip is not installed." >&2
   exit 1
@@ -49,20 +49,20 @@ fi
 BASE_DIR="$(pwd)"
 
 find "$BASE_DIR" -type f -name '*.zip' -print0 | while IFS= read -r -d '' zip_file; do
-  # zip のあるディレクトリ
+  # Directory containing the zip
   parent_dir=$(dirname "$zip_file")
 
-  # zip のファイル名（拡張子なし）
+  # Zip filename without the extension
   zip_name=$(basename "$zip_file" .zip)
 
-  # 新しい展開先ディレクトリ
+  # New extraction directory
   target_dir="$parent_dir/$zip_name"
 
-  # ディレクトリを作成
+  # Create the directory
   mkdir -p "$target_dir"
 
   echo "Extracting: $zip_file -> $target_dir"
 
-  # 上書きしない (-n)
+  # Do not overwrite existing files (-n)
   unzip -n -d "$target_dir" "$zip_file"
 done
