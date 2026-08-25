@@ -28,6 +28,8 @@ config/nvim/sbzr.nvim.im.db/
 config/nvim/local/sbzr.nvim.im
 # Private chezmoi-managed plugin deployed through the public nvim symlink.
 config/nvim/lua/vimquest/
+# Private chezmoi-managed VimQuest lazy spec deployed through the public nvim symlink.
+config/nvim/lua/plugins/vimquest.lua
 .session
 .netrwhist
 tags
