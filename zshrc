@@ -4,15 +4,6 @@ if [[ -n "$TERM" ]] && ! infocmp -- "$TERM" >/dev/null 2>&1; then
     export TERM=xterm-256color
 fi
 
-# WSL 路径优化：默认保留 Windows 互操作（如 explorer.exe, code 等）。
-# 若 Windows 磁盘挂载卡顿，可导出 WSL_STRIP_WINDOWS_PATH=1 启用过滤，
-# 或推荐在 /etc/wsl.conf 中设置 [interop] appendWindowsPath = false。
-if [[ -n "$WSL_DISTRO_NAME" && "${WSL_STRIP_WINDOWS_PATH:-0}" == "1" ]]; then
-    typeset -gaU path
-    path=(${path:#/mnt/*})
-    export PATH="${(j/:/)path}"
-fi
-
 export HISTSIZE=100000
 export SAVEHIST=100000
 export HISTFILE=~/.zsh_history
@@ -45,11 +36,6 @@ fi
 
 # 核心工具集合：通过 zinit 安装命令行工具，并初始化 pyenv/direnv/atuin 等 shell 集成
 source ~/dotfiles/plugins/tools/tools.zsh
-
-# grok: PATH 和 fpath 必须在 compinit 之前设置，否则补全不生效
-# （原来 grok installer 在文件末尾跑了一次冗余 compinit，现在提前到此处避免重复）
-export PATH="$HOME/.grok/bin:$PATH"
-fpath=(~/.grok/completions/zsh $fpath)
 
 # zsh-completions 必须在 compinit 前加载
 zsh_plugins_load_pre_compinit

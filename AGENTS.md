@@ -59,10 +59,6 @@ bash ~/dotfiles/dotlink/dotlink link
 
 - 使用 `$HOME`、`~` 和相对路径；禁止写死 `/Users/<name>` 或 `/home/<name>`。
 - 公共 Zsh 保留通用的 `TERM` terminfo 降级保护。
-- WSL 的 Windows PATH 过滤默认关闭；只有显式设置以下变量时才启用：
-  ```bash
-  export WSL_STRIP_WINDOWS_PATH=1
-  ```
 - 不在公开 Zsh 中手动加载 Kitty shell integration。Kitty 自己的 shell integration 由私有 Kitty 配置管理。
 - 公共配置可以探测可选命令，例如 `command -v eza`，缺少时应保留可用的 fallback，而不是启动失败。
 
