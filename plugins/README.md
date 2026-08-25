@@ -29,7 +29,6 @@ plugin-status
 - `loaded`：当前 shell 已实际加载
 - `cached`：已经下载到 Zinit，但当前 shell 未加载
 - `missing`：启用但尚未下载
-- `disabled`：清单中保留但明确停用
 
 ## 为什么文件内有三个加载阶段
 

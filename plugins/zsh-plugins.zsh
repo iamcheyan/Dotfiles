@@ -26,21 +26,13 @@ typeset -ga _ZSH_PLUGIN_ORDER=(
   'zsh-users/zsh-autosuggestions'
   # 自动补全括号、引号等成对符号。
   'hlissner/zsh-autopair'
-  # 剪贴板历史管理和相关快捷键；当前停用。
-  '1mykull/zshcp'
   # 输入已有命令的替代别名时给出提醒。
   'MichaelAquilina/zsh-you-should-use'
-  # 自动识别压缩格式并解压；当前停用。
-  'le0me55i/zsh-extract'
   # 实时高亮命令语法，必须作为最后一个插件加载。
   'zdharma-continuum/fast-syntax-highlighting'
 )
 
-typeset -gA _ZSH_PLUGIN_NAME _ZSH_PLUGIN_PURPOSE _ZSH_PLUGIN_LOADED _ZSH_PLUGIN_ENABLED
-_ZSH_PLUGIN_ENABLED=(
-  '1mykull/zshcp' 0
-  'le0me55i/zsh-extract' 0
-)
+typeset -gA _ZSH_PLUGIN_NAME _ZSH_PLUGIN_PURPOSE _ZSH_PLUGIN_LOADED
 _ZSH_PLUGIN_NAME=(
   'zsh-users/zsh-completions' 'zsh-completions'
   'Aloxaf/fzf-tab' 'fzf-tab'
@@ -48,9 +40,7 @@ _ZSH_PLUGIN_NAME=(
   'jeffreytse/zsh-vi-mode' 'zsh-vi-mode'
   'zsh-users/zsh-autosuggestions' 'zsh-autosuggestions'
   'hlissner/zsh-autopair' 'zsh-autopair'
-  '1mykull/zshcp' 'zshcp'
   'MichaelAquilina/zsh-you-should-use' 'you-should-use'
-  'le0me55i/zsh-extract' 'zsh-extract'
   'zdharma-continuum/fast-syntax-highlighting' 'fast-syntax-highlighting'
 )
 _ZSH_PLUGIN_PURPOSE=(
@@ -60,9 +50,7 @@ _ZSH_PLUGIN_PURPOSE=(
   'jeffreytse/zsh-vi-mode' 'Vim 风格命令行编辑'
   'zsh-users/zsh-autosuggestions' '历史命令灰色建议'
   'hlissner/zsh-autopair' '括号和引号自动配对'
-  '1mykull/zshcp' '剪贴板历史与快捷键'
-  'MichaelAquilina/zsh-you-should-use' '提醒使用已有别名'
-  'le0me55i/zsh-extract' '自动解压常见压缩文件'
+  'MichaelAquilina/zsh-you-should-use' '提醒已有别名'
   'zdharma-continuum/fast-syntax-highlighting' '命令语法高亮（最后加载）'
 )
 
@@ -138,10 +126,6 @@ zsh_plugins_load_main() {
   # you-should-use：提醒使用已经存在的别名。
   _zsh_plugin_light MichaelAquilina/zsh-you-should-use
 
-  # 这两个插件保留在清单中，但当前停用。
-  # _zsh_plugin_light 1mykull/zshcp
-  # _zsh_plugin_light le0me55i/zsh-extract
-
   # 必须最后加载，避免被后续插件覆盖高亮规则。
   _zsh_plugin_light zdharma-continuum/fast-syntax-highlighting
 }
@@ -151,7 +135,7 @@ zsh_plugins_load_main() {
 # ==============================
 zsh-plugins() {
   local repo name purpose state cache_dir
-  local loaded=0 cached=0 missing=0 disabled=0
+  local loaded=0 cached=0 missing=0
   print -r -- 'Zsh plugins'
   print -r -- '────────────'
   printf '%-24s %-8s %s\n' 'PLUGIN' 'STATUS' 'PURPOSE'
@@ -159,9 +143,7 @@ zsh-plugins() {
     name="${_ZSH_PLUGIN_NAME[$repo]}"
     purpose="${_ZSH_PLUGIN_PURPOSE[$repo]}"
     cache_dir="$(_zsh_plugin_cache_dir "$repo")"
-    if [[ "${_ZSH_PLUGIN_ENABLED[$repo]:-1}" == '0' ]]; then
-      state='disabled'; ((disabled++))
-    elif [[ -n "${_ZSH_PLUGIN_LOADED[$repo]}" ]]; then
+    if [[ -n "${_ZSH_PLUGIN_LOADED[$repo]}" ]]; then
       state='loaded'; ((loaded++))
     elif [[ -d "$cache_dir" ]]; then
       state='cached'; ((cached++))
@@ -171,6 +153,6 @@ zsh-plugins() {
     printf '%-24s %-8s %s\n' "$name" "$state" "$purpose"
   done
   print -r -- '────────────'
-  printf 'loaded=%d cached=%d missing=%d disabled=%d total=%d\n' "$loaded" "$cached" "$missing" "$disabled" "${#_ZSH_PLUGIN_ORDER[@]}"
+  printf 'loaded=%d cached=%d missing=%d total=%d\n' "$loaded" "$cached" "$missing" "${#_ZSH_PLUGIN_ORDER[@]}"
 }
 alias plugin-status='zsh-plugins'
