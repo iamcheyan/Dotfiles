@@ -14,15 +14,25 @@
 # 插件清单：新增/停用插件先改这里
 # ==============================
 typeset -ga _ZSH_PLUGIN_ORDER=(
+  # 额外的命令补全定义，例如 Docker、Git 等工具的补全。
   'zsh-users/zsh-completions'
+  # 用 fzf 替换 Zsh 默认补全菜单，支持模糊搜索和预览。
   'Aloxaf/fzf-tab'
+  # 缓存 atuin、zoxide、direnv 等 shell hook，减少启动开销。
   'mroth/evalcache'
+  # 为命令行提供 Vim 风格的 normal/insert 模式和按键绑定。
   'jeffreytse/zsh-vi-mode'
+  # 根据历史记录和补全结果显示灰色命令建议。
   'zsh-users/zsh-autosuggestions'
+  # 自动补全括号、引号等成对符号。
   'hlissner/zsh-autopair'
+  # 剪贴板历史管理和相关快捷键；当前停用。
   '1mykull/zshcp'
+  # 输入已有命令的替代别名时给出提醒。
   'MichaelAquilina/zsh-you-should-use'
+  # 自动识别压缩格式并解压；当前停用。
   'le0me55i/zsh-extract'
+  # 实时高亮命令语法，必须作为最后一个插件加载。
   'zdharma-continuum/fast-syntax-highlighting'
 )
 
@@ -103,9 +113,11 @@ zsh_plugins_load_post_compinit() {
 # 阶段 3：普通 Shell 插件及其配置
 # ==============================
 zsh_plugins_load_main() {
+  # evalcache：缓存 shell hook 的初始化输出。
   _zsh_plugin_light mroth/evalcache
 
-  # zsh-vi-mode 必须在 autosuggestions 前加载。
+  # zsh-vi-mode：提供 Vim 风格的命令行编辑模式。
+  # 必须在 autosuggestions 前加载，避免按键绑定冲突。
   zinit ice lucid
   _zsh_plugin_light jeffreytse/zsh-vi-mode
   export ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT
@@ -114,13 +126,16 @@ zsh_plugins_load_main() {
     zvm_bindkey viins '^[OA' atuin-up-search
   }
 
+  # zsh-autosuggestions：根据历史和补全结果显示命令建议。
   _zsh_plugin_light zsh-users/zsh-autosuggestions
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
   ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=100
   ZSH_AUTOSUGGEST_USE_ASYNC=1
 
+  # zsh-autopair：自动补全括号和引号。
   _zsh_plugin_light hlissner/zsh-autopair
+  # you-should-use：提醒使用已经存在的别名。
   _zsh_plugin_light MichaelAquilina/zsh-you-should-use
 
   # 这两个插件保留在清单中，但当前停用。
