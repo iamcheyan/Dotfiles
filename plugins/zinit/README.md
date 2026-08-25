@@ -80,7 +80,7 @@ zinit delete --clean
 
 ## 相关文件
 
-- **插件配置**: `~/dotfiles/plugins/plugins/plugins.zsh` - Zsh 功能插件
+- **统一插件配置**: `~/dotfiles/plugins/zsh-plugins.zsh` - 所有 Zsh 功能插件、对应配置和加载状态
 - **工具配置**: `~/dotfiles/plugins/tools/tools.zsh` - CLI 工具安装
 - **补全配置**: `~/dotfiles/plugins/completion/completion.zsh` - 补全系统配置
 

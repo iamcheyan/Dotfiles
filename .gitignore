@@ -26,6 +26,8 @@ config/nvim/tmp/
 config/nvim/lazy-lock.json
 config/nvim/sbzr.nvim.im.db/
 config/nvim/local/sbzr.nvim.im
+# Private chezmoi-managed plugin deployed through the public nvim symlink.
+config/nvim/lua/vimquest/
 .session
 .netrwhist
 tags

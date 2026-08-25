@@ -35,6 +35,9 @@ export PATH="$HOME/.fzf/bin:$PATH"
 # zinit: 插件管理器，负责下载、缓存和加载后面的 zsh 插件/命令
 source ~/dotfiles/plugins/zinit/zinit.zsh
 
+# Zsh 插件唯一配置文件：清单、加载调用、插件专属配置和状态检查
+source ~/dotfiles/plugins/zsh-plugins.zsh
+
 # 提示符主题，显示目录、Git 状态和环境信息
 if [[ -t 1 ]]; then
   source ~/dotfiles/plugins/prompt/prompt.zsh
@@ -48,42 +51,18 @@ source ~/dotfiles/plugins/tools/tools.zsh
 export PATH="$HOME/.grok/bin:$PATH"
 fpath=(~/.grok/completions/zsh $fpath)
 
-# 补全系统：初始化 compinit、额外补全定义和 fzf-tab 补全界面
-source ~/dotfiles/plugins/completion/completion.zsh
+# zsh-completions 必须在 compinit 前加载
+zsh_plugins_load_pre_compinit
 
-# evalcache: 缓存 init 脚本输出，减少 atuin/zoxide/direnv 这类 hook 的重复开销
-zinit light mroth/evalcache
+# 补全系统：初始化 compinit 和 PATH
+source ~/dotfiles/plugins/completion/completion.zsh
+zsh_plugins_load_post_compinit
 
 # 首次调用 node/npm/npx/corepack/fnm 时才初始化 fnm 环境
 source "${HOME}/dotfiles/scripts/setup/setup_fnm.sh"
 
-# zsh-autosuggestions: 根据历史记录提供自动建议
-zinit light zsh-users/zsh-autosuggestions
-# autosuggestions 配置
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)  # 优先历史，然后补全
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"         # 灰色显示建议
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=100            # 大命令禁用建议，提升性能
-ZSH_AUTOSUGGEST_USE_ASYNC=1                    # 异步获取建议
-
-# zsh-autopair: 自动补全括号、引号等
-zinit light hlissner/zsh-autopair
-
-# zsh-vi-mode: 为命令行编辑提供 Vim 模式和模式切换
-# 必须在 autosuggestions 之前加载，避免按键绑定冲突
-zinit ice lucid
-zinit light jeffreytse/zsh-vi-mode
-
-# 配置 zsh-vi-mode
-export ZVM_LINE_INIT_MODE=$ZVM_MODE_INSERT  # 每次新行开始默认进入插入模式
-function zvm_after_init() {
-  zvm_bindkey viins '^[[A' atuin-up-search
-  zvm_bindkey viins '^[OA' atuin-up-search
-}
-
-# 其他增强插件集合：autosuggestions、语法高亮、autopair 等
-# 这里直接 source 本地文件，避免 zinit 对本地 snippet 的缓存副本滞后
-# 具体插件是否异步加载，仍由 plugins.zsh 内部的各个 zinit ice 控制
-source ~/dotfiles/plugins/plugins/plugins.zsh
+# 其余 Shell 插件及其专属配置；语法高亮在此阶段最后加载
+zsh_plugins_load_main
 
 # fzf 相关函数和默认选项：ff/rf/zd/zc/y 等交互工具
 # 这里必须同步加载，否则 ff/rf 在新 shell 中可能不存在

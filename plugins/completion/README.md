@@ -195,7 +195,7 @@ fi
 
 ## 相关文件
 
-- **插件配置**: `~/dotfiles/plugins/plugins/plugins.zsh` - Zsh 功能插件
+- **插件配置**: `~/dotfiles/plugins/zsh-plugins.zsh` - zsh-completions、fzf-tab 及全部 Shell 插件的统一清单和加载配置
 - **工具配置**: `~/dotfiles/plugins/tools/tools.zsh` - CLI 工具安装
 - **fzf 配置**: `~/dotfiles/plugins/fzf/fzf.zsh` - fzf 详细配置
 

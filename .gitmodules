@@ -1,6 +1,3 @@
-[submodule "config/nvim/lua/vimquest"]
-	path = config/nvim/lua/vimquest
-	url = https://github.com/iamcheyan/VimQuest.git
 [submodule "config/ranger/plugins/archives"]
 	path = config/ranger/plugins/archives
 	url = https://github.com/maximtrp/ranger-archives.git
