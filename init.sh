@@ -280,7 +280,7 @@ repair_zinit_plugins() {
 install_essentials() {
     print_info "Checking essential tools..."
 
-    local common_packages="git curl wget unzip git-extras ffmpeg"
+    local common_packages="git curl wget unzip git-extras ffmpeg tmux"
     local debian_packages="build-essential ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local rhel_packages="make automake gcc gcc-c++ ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local arch_packages="base-devel ripgrep fd bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
@@ -913,7 +913,12 @@ install_extra_tools() {
         
         # Start a detached tmux session if not running to allow script-based plugin installation
         tmux new-session -d -s tpm-install 2>/dev/null || true
-        tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
+        # Load the private Chezmoi XDG config when present; otherwise use the public base config.
+        local tmux_conf="$HOME/.tmux.conf"
+        if [[ -f "$HOME/.config/tmux/tmux.conf" ]]; then
+            tmux_conf="$HOME/.config/tmux/tmux.conf"
+        fi
+        tmux source-file "$tmux_conf" 2>/dev/null || true
         bash "$tpm_dir/bin/install_plugins" >/dev/null 2>&1 || true
         tmux kill-session -t tpm-install 2>/dev/null || true
         print_success "Tmux plugins installation completed"
