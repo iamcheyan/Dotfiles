@@ -7,7 +7,7 @@
 # 加载分为三个阶段，是为了遵守 Zsh 的顺序约束：
 #   pre-compinit  -> zsh-completions
 #   post-compinit -> fzf-tab
-#   main          -> 其余插件；fast-syntax-highlighting 最后
+#   main          -> 其余插件；zsh-users/zsh-syntax-highlighting 最后
 
 # ==============================
 # 阶段 1：compinit 之前
@@ -70,6 +70,6 @@ zsh_plugins_load_main() {
   # you-should-use：提醒使用已经存在的别名。
   zinit light MichaelAquilina/zsh-you-should-use
 
-  # 必须最后加载，避免被后续插件覆盖高亮规则。
-  zinit light zdharma-continuum/fast-syntax-highlighting
+  # zsh-users/zsh-syntax-highlighting：实时高亮命令语法，必须最后加载。
+  zinit light zsh-users/zsh-syntax-highlighting
 }
