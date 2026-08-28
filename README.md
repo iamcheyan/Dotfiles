@@ -46,7 +46,7 @@
   * 预置优雅的主题配置文件（`~/.config/herdr/config.toml`），开箱即用。
 * **Tmux 生产力套件**：
   * 开启鼠标支持、RGB 真彩色渲染、精简状态栏。
-  * 集成 TPM 插件管理器、`tmux-resurrect` 与 `tmux-continuum`，支持跨重启自动保存与恢复终端会话。
+  * 集成 TPM、tmux-sensible、tmux-yank、vim-tmux-navigator 与 tmux-fzf；会话恢复等个人增强由 chezmoi 私有层按需加载。
 * **轻量文件管理器**：内置配置好的 `Ranger`（按 `r` 快速调用）与 `Vifm`（按 `v` 快速调用）。
 * **自研零依赖软链工具 `dotlink`**：纯 Shell 编写的极简配置软链管理器，不依赖 Chezmoi 或任何外部工具即可独立运转。
 
@@ -97,7 +97,6 @@ exec zsh
 | `~/dotfiles/config/tmux/tmux.conf` | `~/.tmux.conf` | Tmux 会话管理配置 |
 | `~/dotfiles/config/ranger` | `~/.config/ranger` | Ranger 终端文件管理器 |
 | `~/dotfiles/config/vifm/*` | `~/.config/vifm/*` | Vifm 终端文件管理器 |
-| `~/dotfiles/config/ghostty` | `~/.config/ghostty` | Ghostty 终端配置 |
 | `~/dotfiles/config/atuin` | `~/.config/atuin` | Atuin 命令历史搜索配置 |
 | `~/dotfiles/config/herdr/config.toml` | `~/.config/herdr/config.toml` | Herdr 本地 AI 助手配置 |
 | `~/dotfiles/config/starship/starship.toml` | `~/.config/starship.toml` | Starship 终端提示符主题 |
@@ -141,7 +140,6 @@ dotfiles/
 │   ├── herdr/             # Herdr 本地 AI 助手配置
 │   ├── ranger/            # Ranger 文件管理器配置
 │   ├── vifm/              # Vifm 文件管理器配置
-│   ├── ghostty/           # Ghostty 终端配置
 │   ├── atuin/             # Atuin 命令历史配置
 │   └── starship/          # Starship 提示符主题
 ├── plugins/               # Zsh 插件与补全辅助

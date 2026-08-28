@@ -913,12 +913,9 @@ install_extra_tools() {
         
         # Start a detached tmux session if not running to allow script-based plugin installation
         tmux new-session -d -s tpm-install 2>/dev/null || true
-        # Load the private Chezmoi XDG config when present; otherwise use the public base config.
-        local tmux_conf="$HOME/.tmux.conf"
-        if [[ -f "$HOME/.config/tmux/tmux.conf" ]]; then
-            tmux_conf="$HOME/.config/tmux/tmux.conf"
-        fi
-        tmux source-file "$tmux_conf" 2>/dev/null || true
+        # The public dotfiles repository owns the single main config.
+        # Chezmoi may provide optional private settings sourced by it.
+        tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
         bash "$tpm_dir/bin/install_plugins" >/dev/null 2>&1 || true
         tmux kill-session -t tpm-install 2>/dev/null || true
         print_success "Tmux plugins installation completed"

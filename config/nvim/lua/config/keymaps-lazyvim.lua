@@ -162,6 +162,10 @@ map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
 ------------------- toggle options (<leader>u) -------------------------------
+local function setup_snacks_keymaps()
+if not Snacks then
+  return
+end
 Snacks.toggle({
   name = "Auto Format",
   get = function() return vim.g.autoformat == nil or vim.g.autoformat end,
@@ -189,6 +193,18 @@ Snacks.toggle.profiler():map("<leader>dpp")
 Snacks.toggle.profiler_highlights():map("<leader>dph")
 if vim.lsp.inlay_hint then
   Snacks.toggle.inlay_hints():map("<leader>uh")
+end
+Snacks.toggle.zoom():map("<leader>wm"):map("<leader>uZ")
+end
+
+if Snacks then
+  setup_snacks_keymaps()
+else
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VeryLazy",
+    once = true,
+    callback = setup_snacks_keymaps,
+  })
 end
 
 ------------------- lazygit ---------------------------------------------------
@@ -231,7 +247,6 @@ map("n", "<leader>wK", "<c-w>K", { desc = "Move Window Up" })
 map("n", "<leader>wL", "<c-w>L", { desc = "Move Window Right" })
 map("n", "<leader>s|", "<cmd>vsplit<cr>", { desc = "Split Right" })
 map("n", "<leader>s-", "<cmd>split<cr>", { desc = "Split Below" })
-Snacks.toggle.zoom():map("<leader>wm"):map("<leader>uZ")
 map("n", "<leader>uz", function() pcall(Snacks.zen.zoom) end, { desc = "Zen Mode" })
 
 ------------------- tabs ------------------------------------------------------

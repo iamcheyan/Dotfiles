@@ -25,6 +25,21 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Optional private extensions are kept outside the public dotfiles tree.
+local private_nvim = vim.fn.expand("~/.config/nvim-private")
+local spec = { { import = "plugins" } }
+local private_spec_file = private_nvim .. "/lua/plugins/vimquest.lua"
+if vim.fn.filereadable(private_spec_file) == 1 then
+  local ok, private_specs = pcall(dofile, private_spec_file)
+  if ok and type(private_specs) == "table" then
+    if private_specs[1] ~= nil then
+      vim.list_extend(spec, private_specs)
+    else
+      table.insert(spec, private_specs)
+    end
+  end
+end
+
 -- Register the "LazyFile" pseudo-event so plugin specs using
 -- `event = "LazyFile"` keep working. Mirrors LazyVim's original registration.
 local Event = require("lazy.core.handler.event")
@@ -46,10 +61,8 @@ if vim.fn.filewritable(lockfile) ~= 1 then
 end
 
 require("lazy").setup({
-  spec = {
-    -- import/override with your plugins
-    { import = "plugins" },
-  },
+  -- Import public plugins and append the optional private layer.
+  spec = spec,
   -- Force a concrete lockfile path to avoid nil/invalid values
   lockfile = lockfile,
   -- Don't open lockfile on startup
