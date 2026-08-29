@@ -137,13 +137,15 @@ zinit light direnv/direnv
 # mdcat: 使用 cargo 安装: cargo install mdcat
 # aws: 使用官方安装脚本: curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
 
-# atuin 只下载二进制，不再自动初始化（初始化在 zshrc 中进行）
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  zinit ice as"command" from"gh-r" bpick"*apple-darwin*.tar.gz" mv"atuin-*/atuin -> atuin" pick"atuin"
-else
-  # Linux (x86_64 or aarch64)
-  local atuin_arch="x86_64"
-  [[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]] && atuin_arch="aarch64"
-  zinit ice as"command" from"gh-r" bpick"atuin-${atuin_arch}-unknown-linux-gnu.tar.gz" mv"atuin-*/atuin -> atuin" pick"atuin"
+# atuin 由系统包管理器安装；仅在系统没有 atuin 时使用 zinit 兜底
+if ! command -v atuin >/dev/null 2>&1; then
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    zinit ice as"command" from"gh-r" bpick"*apple-darwin*.tar.gz" mv"atuin-*/atuin -> atuin" pick"atuin"
+  else
+    # Linux (x86_64 or aarch64)
+    local atuin_arch="x86_64"
+    [[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]] && atuin_arch="aarch64"
+    zinit ice as"command" from"gh-r" bpick"atuin-${atuin_arch}-unknown-linux-gnu.tar.gz" mv"atuin-*/atuin -> atuin" pick"atuin"
+  fi
+  zinit light atuinsh/atuin
 fi
-zinit light atuinsh/atuin
