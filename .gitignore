@@ -11,6 +11,7 @@ Thumbs.db:encryptable
 ehthumbs.db
 Desktop.ini
 *.orig
+*.bak.*
 
 # ============================================
 # 编辑器 / IDE
