@@ -17,7 +17,7 @@ __fnm_bin() {
         fi
     done
 
-    # Homebrew or system-installed fnm: resolve through PATH.
+    # Fallback: resolve fnm through PATH (e.g. system package manager install).
     local via_path
     via_path="$(command -v fnm 2>/dev/null)" && [[ -n "$via_path" ]] && {
         printf '%s\n' "$via_path"
