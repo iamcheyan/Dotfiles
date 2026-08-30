@@ -13,6 +13,11 @@
 - `dotlink` 软链接工具与跨平台初始化脚本
 - 通用安装、维护和文档脚本
 
+本机共有三个主要配置仓库：`~/nixos-config` 是 NixOS 系统层，`~/chezmoi`
+是用户级私人编排层，本仓库是公开基础层。需要 `nixos-rebuild`、涉及 `/etc`、
+系统服务/包/驱动/用户组的配置进入 nixos-config；不能公开或属于个人软件编排的
+用户配置进入 chezmoi。
+
 本仓库**不负责**个人私有配置。以下内容由私有 `~/chezmoi` 管理：
 
 - Kitty、Yazi、Zellij、Fcitx5、Karabiner、Sumika Shell
