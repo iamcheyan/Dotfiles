@@ -280,7 +280,7 @@ repair_zinit_plugins() {
 install_essentials() {
     print_info "Checking essential tools..."
 
-    local common_packages="git curl wget unzip git-extras ffmpeg tmux"
+    local common_packages="git curl wget unzip git-extras ffmpeg"
     local debian_packages="build-essential ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local rhel_packages="make automake gcc gcc-c++ ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local arch_packages="base-devel ripgrep fd bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
@@ -872,7 +872,7 @@ install_docker() {
     fi
 }
 
-# Install additional tools (Docker, Zellij, TPM tmux plugins)
+# Install additional tools (Docker, Zellij)
 install_extra_tools() {
     local install_dir="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install"
     
@@ -901,27 +901,6 @@ install_extra_tools() {
         print_success "Herdr is already installed"
     fi
 
-
-    # Tmux Plugins (TPM)
-    if command_exists tmux; then
-        print_info "Checking and installing tmux plugins (TPM)..."
-        local tpm_dir="$HOME/.tmux/plugins/tpm"
-        if [[ ! -d "$tpm_dir" ]]; then
-            print_info "Cloning Tmux Plugin Manager (TPM)..."
-            git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir"
-        fi
-        
-        # Start a detached tmux session if not running to allow script-based plugin installation
-        tmux new-session -d -s tpm-install 2>/dev/null || true
-        # The public dotfiles repository owns the single main config.
-        # Chezmoi may provide optional private settings sourced by it.
-        tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
-        bash "$tpm_dir/bin/install_plugins" >/dev/null 2>&1 || true
-        tmux kill-session -t tpm-install 2>/dev/null || true
-        print_success "Tmux plugins installation completed"
-    else
-        print_warning "tmux is not installed, skipping tmux plugins installation"
-    fi
 }
 
 
@@ -1071,7 +1050,7 @@ EOF
     echo ""
 
     # 12. Install additional tools
-    print_info "Step 12/12: Installing additional tools (Docker, Zellij, TPM)"
+    print_info "Step 12/12: Installing additional tools (Docker, Zellij)"
     run_step "extra tools install" install_extra_tools
     echo ""
 

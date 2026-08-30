@@ -9,7 +9,7 @@
 
 - Zsh 启动文件、通用 aliases、插件、补全与 prompt
 - Neovim 配置与公开插件
-- Tmux、Ranger、Vifm、Ghostty、Starship 等通用工具配置
+- Ranger、Vifm、Ghostty、Starship 等通用工具配置
 - `dotlink` 软链接工具与跨平台初始化脚本
 - 通用安装、维护和文档脚本
 
@@ -17,7 +17,7 @@
 
 - Kitty、Yazi、Zellij、Fcitx5、Karabiner、Sumika Shell
 - AI Agent wrappers、Agent quota、OpenCode 私人 provider 配置
-- tmux 私有 Agent 恢复规则
+- Tmux 主配置及私有 Agent 恢复规则
 - API Key、Token、`.env`、私有服务器地址、机器专属脚本
 
 公开仓库中不得提交密码、Token、API Key、SSH 私钥、真实凭据或个人机器的绝对路径。

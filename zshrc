@@ -122,14 +122,8 @@ v() {
 
 # fnm lazy loader 已在 setup_fnm.sh (line 51) 中设置，这里不再重复初始化。
 
-# tmux-persist: Ctrl-d 退出 shell 前自动保存当前 session
-# 确保退出会话时 pane 内容和运行中的进程被快照捕获
-# 用 #{session_name} 而非 #{client_session}：后者在无 attached client 时为空，
-# 前者始终能从当前 pane 上下文解析出 session 名
-if [[ -n "$TMUX" ]]; then
-  zshexit() {
-    local script
-    script="$(tmux show-option -gqv @persist-save-script-path)"
-    [[ -n "$script" ]] && "$script" quiet "$(tmux display-message -p '#{session_name}')" >/dev/null 2>&1
-  }
-fi
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<

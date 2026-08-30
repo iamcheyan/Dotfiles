@@ -1,6 +1,6 @@
 # 🚀 Dotfiles — 现代化终端开发环境一键配置
 
-> 基于 **Zsh + 自管 Neovim (lazy.nvim) + Tmux + 本地 AI 工具 (Herdr)** 的全套极速、开箱即用终端配置方案。
+> 基于 **Zsh + 自管 Neovim (lazy.nvim) + 本地 AI 工具 (Herdr)** 的全套极速、开箱即用终端配置方案。
 > 纯公开、零外部强依赖，一行命令跨平台全自动交付！
 
 ---
@@ -44,10 +44,7 @@
 * **内置热门本地 AI 助手 Herdr**：
   * `init.sh` 脚本自动安装并配置当前热门的终端本地 AI 编程助手 [Herdr](https://herdr.dev/)。
   * 预置优雅的主题配置文件（`~/.config/herdr/config.toml`），开箱即用。
-* **Tmux 生产力套件**：
-  * 开启鼠标支持、RGB 真彩色渲染、精简状态栏。
-  * 集成 TPM、tmux-sensible、tmux-yank、vim-tmux-navigator 与 tmux-fzf；会话恢复等个人增强由 chezmoi 私有层按需加载。
-* **轻量文件管理器**：内置配置好的 `Ranger`（按 `r` 快速调用）与 `Vifm`（按 `v` 快速调用）。
+* **轻量文件管理器**：内置配置好的 `Ranger`（按 `ra` 快速调用）与 `Vifm`（按 `v` 快速调用）。
 * **自研零依赖软链工具 `dotlink`**：纯 Shell 编写的极简配置软链管理器，不依赖 Chezmoi 或任何外部工具即可独立运转。
 
 ---
@@ -94,7 +91,6 @@ exec zsh
 |---|---|---|
 | `~/dotfiles/zshrc` | `~/.zshrc` | Zsh 主配置文件 |
 | `~/dotfiles/config/nvim` | `~/.config/nvim` | Neovim 完整 IDE 配置 |
-| `~/dotfiles/config/tmux/tmux.conf` | `~/.tmux.conf` | Tmux 会话管理配置 |
 | `~/dotfiles/config/ranger` | `~/.config/ranger` | Ranger 终端文件管理器 |
 | `~/dotfiles/config/vifm/*` | `~/.config/vifm/*` | Vifm 终端文件管理器 |
 | `~/dotfiles/config/atuin` | `~/.config/atuin` | Atuin 命令历史搜索配置 |
@@ -110,7 +106,7 @@ exec zsh
 * **`Esc`**：进入命令行 Vim 普通模式（支持 `h/j/k/l` 移动、`w/b` 跳词、`dd` 删行、`cw` 改词）
 * **`l` / `ll` / `la`**：调用 `eza` 查看带图标与 Git 状态的文件列表
 * **`z <目录名>`**：Zoxide 智能跳转目录
-* **`r`**：打开 Ranger 并在退出时自动 `cd` 到最后停留的目录
+* **`ra`**：打开 Ranger 并在退出时自动 `cd` 到最后停留的目录
 * **`v`**：打开 Vifm 并在退出时自动 `cd` 到最后停留的目录
 
 ### 2. Neovim 核心键位（空格键 Leader）
@@ -136,7 +132,6 @@ dotfiles/
 ├── dotlink/               # 自研轻量符号链接管理器
 ├── config/                # 应用配置集合
 │   ├── nvim/              # Neovim lazy.nvim 配置
-│   ├── tmux/              # Tmux 会话复用配置
 │   ├── herdr/             # Herdr 本地 AI 助手配置
 │   ├── ranger/            # Ranger 文件管理器配置
 │   ├── vifm/              # Vifm 文件管理器配置

@@ -28,9 +28,6 @@ $HOME/dotfiles/config/vifm/vifmrc:$HOME/.config/vifm/vifmrc
 $HOME/dotfiles/config/vifm/colors:$HOME/.config/vifm/colors
 $HOME/dotfiles/config/vifm/scripts:$HOME/.config/vifm/scripts
 
-# tmux
-$HOME/dotfiles/config/tmux/tmux.conf:$HOME/.tmux.conf
-
 #[link:macos]
 #MacOS 配置可以单独写在这里
 #$HOME/dotfiles/config/karabiner:$HOME/.config/karabiner    # Karabiner 配置文件

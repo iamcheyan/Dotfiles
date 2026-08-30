@@ -45,8 +45,8 @@
 
 弹出 fzf 文件列表，用键盘搜索文件：
 
-- **Enter**：文件用 `nvim` 打开，目录用 `r`（ranger 包装函数，见 `aliases.conf`）打开
-- **Alt+Enter**：强制用 `r` 打开（文件用 `--selectfile`，目录直接打开）
+- **Enter**：文件用 `nvim` 打开，目录用 `ra`（ranger 包装函数，见 `aliases.conf`）打开
+- **Alt+Enter**：强制用 `ra` 打开（文件用 `--selectfile`，目录直接打开）
 - **Alt+C**：复制当前选中路径到剪挂板
 - `Tab` / `Shift+Tab` / `Alt+j` / `Alt+k` 等：移动 / 翻页
 
@@ -66,7 +66,7 @@ ffd . bundle.mjs          # 在当前目录搜索
 ffd /some/path bundle.mjs # 在指定目录搜索
 ```
 
-选中后：文件用 `nvim` 打开，目录用 `r` 打开。`ffd` 已设置 `noglob` 别名。
+选中后：文件用 `nvim` 打开，目录用 `ra` 打开。`ffd` 已设置 `noglob` 别名。
 
 > 说明：旧文档中提到的 `ff` / `rf` / `zd` / `zc` / `y` 等函数**当前配置中已不存在**（未在 `fzf.zsh`、`aliases.conf` 或 zshrc 中定义）。如有需要请自行添加。
 
@@ -111,7 +111,7 @@ ffd . main.py  # 在当前目录按名搜索 "main.py"
 ### 编辑器配置
 
 - 文件使用 `nvim` 打开
-- 目录使用 `r`（ranger 包装函数，定义在 `aliases.conf`）
+- 目录使用 `ra`（ranger 包装函数，定义在 `aliases.conf`）
 
 ## 故障排除
 
@@ -153,7 +153,7 @@ ffd . main.py  # 在当前目录按名搜索 "main.py"
 
 - **工具配置**: `~/dotfiles/plugins/tools/tools.zsh` - fzf 补全/键绑定 snippet 加载
 - **补全配置**: `~/dotfiles/plugins/completion/completion.zsh` - fzf-tab 补全配置
-- **别名配置**: `~/dotfiles/aliases.conf` - `r` (ranger) 等包装函数
+- **别名配置**: `~/dotfiles/aliases.conf` - `ra` (ranger) 等包装函数
 
 ## 参考资源
 

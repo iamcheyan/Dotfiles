@@ -146,14 +146,14 @@ f() {
 
     if [[ "$key" == "alt-enter" && -n "$target" ]]; then
         if [[ -d "$target" ]]; then
-            r "$target"
+            ra "$target"
         else
-            r --selectfile "$target"
+            ra --selectfile "$target"
         fi
     elif [[ -f "$target" ]]; then
         nvim "$target"
     elif [[ -d "$target" ]]; then
-        r "$target"
+        ra "$target"
     elif [[ -n "$target" ]]; then
         printf '%s\n' "$target"
     fi
@@ -256,14 +256,14 @@ ffd() {
             if [[ -n "$target" ]]; then
                 if [[ "$key" == "alt-enter" ]]; then
                     if [[ -d "$target" ]]; then
-                        r "$target"
+                        ra "$target"
                     else
-                        r --selectfile "$target"
+                        ra --selectfile "$target"
                     fi
                 elif [[ -f "$target" ]]; then
                     nvim "$target"
                 elif [[ -d "$target" ]]; then
-                    r "$target"
+                    ra "$target"
                 fi
             fi
             return
