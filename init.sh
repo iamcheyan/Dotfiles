@@ -68,6 +68,14 @@ command_exists() {
 # Detect the operating system
 detect_os() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        if [[ -f /etc/os-release ]]; then
+            source /etc/os-release
+            if [[ "${ID:-}" == "nixos" ]]; then
+                OS="nixos"
+                echo "$OS"
+                return
+            fi
+        fi
         if command_exists apt-get; then
             OS="debian"
         elif command_exists yum || command_exists dnf; then
@@ -152,6 +160,10 @@ install_zsh() {
                 print_warning "On macOS, install Homebrew first or install zsh manually"
                 return 1
             fi
+            ;;
+        nixos)
+            print_info "NixOS detected; install zsh through nixos-config instead of the dotfiles bootstrap."
+            return 0
             ;;
         *)
             print_warning "Could not detect the operating system automatically. Please install zsh manually"
@@ -280,7 +292,7 @@ repair_zinit_plugins() {
 install_essentials() {
     print_info "Checking essential tools..."
 
-    local common_packages="git curl wget unzip git-extras ffmpeg"
+    local common_packages="git curl wget unzip git-extras ffmpeg tmux"
     local debian_packages="build-essential ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local rhel_packages="make automake gcc gcc-c++ ripgrep fd-find bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
     local arch_packages="base-devel ripgrep fd bat eza zoxide translate-shell glow mdcat yt-dlp tealdeer gping jq httpie broot htop ranger"
@@ -301,7 +313,10 @@ install_essentials() {
     fi
 
     OS=$(detect_os)
-    if [[ "$OS" == "debian" ]]; then
+    if [[ "$OS" == "nixos" ]]; then
+        print_info "NixOS detected; system packages are managed by nixos-config. Skipping package installation."
+        return 0
+    elif [[ "$OS" == "debian" ]]; then
         if command_exists sudo; then
             sudo apt-get update || true
             # Only install packages that are available in the configured repositories
@@ -381,6 +396,10 @@ install_essentials() {
 
 # Install pyenv
 install_pyenv() {
+    if [[ "$(detect_os)" == "nixos" ]]; then
+        print_info "NixOS detected; manage Python environments with Nix or dev shells. Skipping pyenv installation."
+        return 0
+    fi
     local pyenv_dir="$HOME/.pyenv"
     
     if [[ -d "$pyenv_dir" ]]; then
@@ -461,6 +480,10 @@ ensure_fnm_node() {
 }
 
 install_fnm() {
+    if [[ "$(detect_os)" == "nixos" ]]; then
+        print_info "NixOS detected; manage Node.js with Nix or dev shells. Skipping fnm installation."
+        return 0
+    fi
     export FNM_DIR="${FNM_DIR:-$HOME/.fnm}"
     export PATH="$FNM_DIR:$FNM_DIR/bin:$HOME/.local/share/fnm:$HOME/.local/bin:$PATH"
 
@@ -483,6 +506,10 @@ install_fnm() {
 
 # Install fzf
 install_fzf() {
+    if [[ "$(detect_os)" == "nixos" ]]; then
+        print_info "NixOS detected; manage fzf with nixos-config. Skipping fzf installation."
+        return 0
+    fi
     if command_exists fzf; then
         print_success "fzf is already installed: $(fzf --version | head -n 1)"
         return 0
@@ -536,6 +563,10 @@ install_fzf() {
                 print_warning "On macOS, install Homebrew first or install fzf manually"
                 return 1
             fi
+            ;;
+        nixos)
+            print_info "NixOS detected; install fzf through nixos-config instead of the dotfiles bootstrap."
+            return 1
             ;;
         *)
             print_warning "Could not detect the operating system automatically. Please install fzf manually"
@@ -741,6 +772,10 @@ detect_dotfiles_dir() {
 
 # Install Neovim
 install_neovim() {
+    if [[ "$(detect_os)" == "nixos" ]]; then
+        print_info "NixOS detected; manage Neovim with nixos-config. Skipping Neovim installation."
+        return 0
+    fi
     local install_script="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install/install_nvim.sh"
     if [[ -f "$install_script" ]]; then
         print_info "Installing Neovim..."
@@ -770,6 +805,10 @@ install_docker() {
     current_user="${SUDO_USER:-$USER}"
 
     case "$os" in
+        nixos)
+            print_info "NixOS detected. Manage Docker through nixos-config; skipping Docker installation."
+            return 0
+            ;;
         macos)
             print_info "macOS detected. Skipping Docker Engine install in init.sh. Use Docker Desktop or Colima manually."
             return 0
@@ -877,6 +916,11 @@ install_extra_tools() {
     local install_dir="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install"
     
     print_info "Checking and installing additional tools..."
+
+    if [[ "$(detect_os)" == "nixos" ]]; then
+        print_info "NixOS detected; manage Docker, Zellij, and Herdr with nixos-config. Skipping additional tool installation."
+        return 0
+    fi
 
     # Docker (Linux only)
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
