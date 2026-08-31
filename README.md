@@ -15,7 +15,8 @@
 ## 🌟 核心卖点
 
 ### 1. ⚡ 一键全自动初始化（One-Click Setup）
-* **跨平台全自动适配**：原生支持 **Debian / Ubuntu / Arch Linux / Fedora / Void / macOS**。
+* **跨平台全自动适配**：原生支持 **Debian / Ubuntu / Arch Linux / Fedora / Void / NixOS / macOS**。
+* **NixOS 独立处理**：检测到 NixOS 时使用用户级 `nix profile install` 安装公共 CLI 基线，不调用 apt/pacman/brew，也不依赖任何个人 NixOS 配置仓库。
 * **一行命令搞定一切**：自动安装并配置所需工具链（`eza`、`bat`、`fd`、`ripgrep`、`zoxide`、`fzf`、`jq`、`btop` 等）、Nerd Font 字体、Zsh 插件与软链接，无需手动折腾。
 
 ### 2. 🐚 极速现代化 Zsh 终端体验

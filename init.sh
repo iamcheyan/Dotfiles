@@ -162,8 +162,12 @@ install_zsh() {
             fi
             ;;
         nixos)
-            print_info "NixOS detected; install zsh through nixos-config instead of the dotfiles bootstrap."
-            return 0
+            if command_exists nix; then
+                print_info "NixOS detected; installing zsh with nix profile..."
+                nix profile install nixpkgs#zsh || true
+            else
+                print_warning "NixOS detected but nix is unavailable; install zsh with your system configuration"
+            fi
             ;;
         *)
             print_warning "Could not detect the operating system automatically. Please install zsh manually"
@@ -314,7 +318,17 @@ install_essentials() {
 
     OS=$(detect_os)
     if [[ "$OS" == "nixos" ]]; then
-        print_info "NixOS detected; system packages are managed by nixos-config. Skipping package installation."
+        if ! command_exists nix; then
+            print_warning "NixOS detected but nix is unavailable; skipping package installation"
+            return 0
+        fi
+        local nix_packages=(git curl wget unzip ffmpeg tmux ripgrep fd fzf jq neovim ranger)
+        print_info "NixOS detected; installing public CLI tools with nix profile..."
+        for pkg in "${nix_packages[@]}"; do
+            if ! command_exists "$pkg"; then
+                nix profile install "nixpkgs#$pkg" || print_warning "Could not install nix package: $pkg"
+            fi
+        done
         return 0
     elif [[ "$OS" == "debian" ]]; then
         if command_exists sudo; then
