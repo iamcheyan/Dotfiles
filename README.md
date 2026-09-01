@@ -97,20 +97,20 @@ files remain ignored:
 
 ```bash
 mkdir -p "$HOME/dotfiles/local"
-$EDITOR "$HOME/dotfiles/local/zshrc"
+$EDITOR "$HOME/dotfiles/local/custom.zsh"
 ```
 
-The file is loaded last by `zshrc`, after the public aliases and plugins, so it
-can define aliases, functions, environment variables, and other Zsh settings.
-Only `local/README.md` is tracked. Other files under `local/` are ignored by
-Git and are never overwritten by a `git pull` or dotfiles update. If the local
-configuration file does not exist, it is silently skipped. `init.sh` does not
-create this directory; create it only when you need local overrides.
+Every regular file in `local/` is loaded last by `zshrc`, after the public
+aliases and plugins, so the files can define aliases, functions, environment
+variables, and other Zsh settings. `README.md` is skipped. Only
+`local/README.md` is tracked. Other files under `local/` are ignored by Git
+and are never overwritten by a `git pull` or dotfiles update. `init.sh` does
+not create this directory; create it only when you need local overrides.
 
 Example:
 
 ```zsh
-# ~/dotfiles/local/zshrc
+# ~/dotfiles/local/custom.zsh
 alias work='cd ~/work'
 export PROJECTS_DIR="$HOME/projects"
 ```

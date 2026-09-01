@@ -20,39 +20,42 @@ if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
     export TERM=xterm-256color
 fi
 
+# Resolve the repository from this file's location so the checkout can live
+# anywhere. In zsh, %x expands to the file currently being sourced.
+dotfiles_root="${${(%):-%x}:A:h}"
 
 export PATH="$HOME/.fzf/bin:$PATH"
 
 # zinit: 插件管理器，负责下载、缓存和加载后面的 zsh 插件/命令
-source ~/dotfiles/plugins/zinit/zinit.zsh
+source "$dotfiles_root/plugins/zinit/zinit.zsh"
 
 # Zsh 插件唯一配置文件：清单、加载调用、插件专属配置和状态检查
-source ~/dotfiles/plugins/zsh-plugins.zsh
+source "$dotfiles_root/plugins/zsh-plugins.zsh"
 
 # 提示符主题，显示目录、Git 状态和环境信息
 if [[ -t 1 ]]; then
-  source ~/dotfiles/plugins/prompt/prompt.zsh
+  source "$dotfiles_root/plugins/prompt/prompt.zsh"
 fi
 
 # 核心工具集合：通过 zinit 安装命令行工具，并初始化 pyenv/direnv/atuin 等 shell 集成
-source ~/dotfiles/plugins/tools/tools.zsh
+source "$dotfiles_root/plugins/tools/tools.zsh"
 
 # zsh-completions 必须在 compinit 前加载
 zsh_plugins_load_pre_compinit
 
 # 补全系统：初始化 compinit 和 PATH
-source ~/dotfiles/plugins/completion/completion.zsh
+source "$dotfiles_root/plugins/completion/completion.zsh"
 zsh_plugins_load_post_compinit
 
 # 首次调用 node/npm/npx/corepack/fnm 时才初始化 fnm 环境
-source "${HOME}/dotfiles/scripts/setup/setup_fnm.sh"
+source "$dotfiles_root/scripts/setup/setup_fnm.sh"
 
 # 其余 Shell 插件及其专属配置；语法高亮在此阶段最后加载
 zsh_plugins_load_main
 
 # fzf 相关函数和默认选项：ff/rf/zd/zc/y 等交互工具
 # 这里必须同步加载，否则 ff/rf 在新 shell 中可能不存在
-source ~/dotfiles/plugins/fzf/fzf.zsh
+source "$dotfiles_root/plugins/fzf/fzf.zsh"
 
 # atuin: 增强版 shell 历史，支持更强的搜索和历史同步
 # 这里初始化 shell hook，并用 evalcache 缓存其输出
@@ -98,11 +101,15 @@ fi
 
 # aliases
 [[ -f ~/.config/aliases.conf ]] && source ~/.config/aliases.conf
-[[ -f ~/dotfiles/aliases.conf ]] && source ~/dotfiles/aliases.conf
+[[ -f "$dotfiles_root/aliases.conf" ]] && source "$dotfiles_root/aliases.conf"
 
-# Optional local overrides. Keep aliases and other private Zsh settings here;
-# the entire local/ directory is ignored by Git and is never overwritten.
-[[ -r ~/dotfiles/local/zshrc ]] && source ~/dotfiles/local/zshrc
+# Load every regular file in local/, except this usage guide. The directory is
+# intentionally user-owned; Git tracks only local/README.md.
+for dotfiles_local_file in "$dotfiles_root"/local/*(N.D.); do
+    [[ "${dotfiles_local_file:t}" == "README.md" ]] && continue
+    source "$dotfiles_local_file"
+done
+unset dotfiles_local_file
 
 # SSH 会话时在窗口标题前加 [SSH] 标记
 function _update_window_title() {
