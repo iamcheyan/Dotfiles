@@ -59,9 +59,12 @@ auto-save-list/
 tramp
 
 # ============================================
-# Local user overrides (never commit)
+# Local user overrides (keep only the usage guide)
 # ============================================
 /local/
+!/local/
+/local/*
+!/local/README.md
 
 # ============================================
 # 密钥 / 凭据 / 敏感数据

@@ -91,8 +91,9 @@ exec zsh
 
 ### Optional local Zsh configuration
 
-Personal aliases and Zsh overrides can be stored directly in this repository's
-ignored local directory:
+Personal aliases and Zsh overrides can be stored in the repository's local
+directory. The directory is prepared with a usage guide, while user-created
+files remain ignored:
 
 ```bash
 mkdir -p "$HOME/dotfiles/local"
@@ -101,9 +102,10 @@ $EDITOR "$HOME/dotfiles/local/zshrc"
 
 The file is loaded last by `zshrc`, after the public aliases and plugins, so it
 can define aliases, functions, environment variables, and other Zsh settings.
-The entire `local/` directory is ignored by Git and is never overwritten by a
-`git pull` or dotfiles update. If the file does not exist, it is silently
-skipped. `init.sh` creates the directory automatically.
+Only `local/README.md` is tracked. Other files under `local/` are ignored by
+Git and are never overwritten by a `git pull` or dotfiles update. If the local
+configuration file does not exist, it is silently skipped. `init.sh` does not
+create this directory; create it only when you need local overrides.
 
 Example:
 

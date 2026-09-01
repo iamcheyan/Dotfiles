@@ -780,7 +780,6 @@ detect_dotfiles_dir() {
     fi
 
     export DOTFILES_DIR="$dotfiles_dir"
-    mkdir -p "$DOTFILES_DIR/local"
     print_success "dotfiles directory: $DOTFILES_DIR"
     return 0
 }
