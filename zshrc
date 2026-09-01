@@ -100,6 +100,12 @@ fi
 [[ -f ~/.config/aliases.conf ]] && source ~/.config/aliases.conf
 [[ -f ~/dotfiles/aliases.conf ]] && source ~/dotfiles/aliases.conf
 
+# Optional user-local overrides. This file is outside the repository so updates
+# to dotfiles never overwrite personal aliases or Zsh customizations.
+local_zsh_config="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/local.zsh"
+[[ -r "$local_zsh_config" ]] && source "$local_zsh_config"
+unset local_zsh_config
+
 # SSH 会话时在窗口标题前加 [SSH] 标记
 function _update_window_title() {
     local prefix=""

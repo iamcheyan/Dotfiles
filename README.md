@@ -89,6 +89,29 @@ bash dotlink/dotlink link
 exec zsh
 ```
 
+### Optional local Zsh configuration
+
+Personal aliases and Zsh overrides can be stored outside this repository:
+
+```bash
+mkdir -p "$HOME/.config/dotfiles"
+$EDITOR "$HOME/.config/dotfiles/local.zsh"
+```
+
+The file is loaded last by `zshrc`, after the public aliases and plugins, so it
+can define aliases, functions, environment variables, and other Zsh settings.
+It is intentionally outside the repository and is never overwritten by a
+`git pull` or dotfiles update. If the file does not exist, it is silently
+skipped.
+
+Example:
+
+```zsh
+# ~/.config/dotfiles/local.zsh
+alias work='cd ~/work'
+export PROJECTS_DIR="$HOME/projects"
+```
+
 ---
 
 ## 📂 部署目标软链接清单
