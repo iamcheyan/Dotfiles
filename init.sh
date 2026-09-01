@@ -163,10 +163,10 @@ install_zsh() {
             ;;
         nixos)
             if command_exists nix; then
-                print_info "NixOS detected; installing zsh with nix profile..."
+                print_info "NixOS detected; install zsh with nix profile..."
                 nix profile install nixpkgs#zsh || true
             else
-                print_warning "NixOS detected but nix is unavailable; install zsh with your system configuration"
+                print_warning "NixOS detected but nix is unavailable; install Nix before running this bootstrap"
             fi
             ;;
         *)
@@ -322,7 +322,7 @@ install_essentials() {
             print_warning "NixOS detected but nix is unavailable; skipping package installation"
             return 0
         fi
-        local nix_packages=(git curl wget unzip ffmpeg tmux ripgrep fd fzf jq neovim ranger)
+        local nix_packages=(git curl wget unzip ffmpeg tmux ripgrep fd fzf jq neovim ranger atuin)
         print_info "NixOS detected; installing public CLI tools with nix profile..."
         for pkg in "${nix_packages[@]}"; do
             if ! command_exists "$pkg"; then
@@ -411,7 +411,7 @@ install_essentials() {
 # Install pyenv
 install_pyenv() {
     if [[ "$(detect_os)" == "nixos" ]]; then
-        print_info "NixOS detected; manage Python environments with Nix or dev shells. Skipping pyenv installation."
+        print_info "NixOS detected; manage Python environments with Nix or development shells. Skipping pyenv installation."
         return 0
     fi
     local pyenv_dir="$HOME/.pyenv"
@@ -521,7 +521,7 @@ install_fnm() {
 # Install fzf
 install_fzf() {
     if [[ "$(detect_os)" == "nixos" ]]; then
-        print_info "NixOS detected; manage fzf with nixos-config. Skipping fzf installation."
+        print_info "NixOS detected; manage fzf with nix profile. Skipping duplicate installation."
         return 0
     fi
     if command_exists fzf; then
@@ -579,7 +579,7 @@ install_fzf() {
             fi
             ;;
         nixos)
-            print_info "NixOS detected; install fzf through nixos-config instead of the dotfiles bootstrap."
+            print_info "NixOS detected; install fzf with nix profile instead of the dotfiles bootstrap."
             return 1
             ;;
         *)
@@ -787,7 +787,7 @@ detect_dotfiles_dir() {
 # Install Neovim
 install_neovim() {
     if [[ "$(detect_os)" == "nixos" ]]; then
-        print_info "NixOS detected; manage Neovim with nixos-config. Skipping Neovim installation."
+        print_info "NixOS detected; manage Neovim with nix profile. Skipping duplicate installation."
         return 0
     fi
     local install_script="${DOTFILES_DIR:-$HOME/dotfiles}/scripts/install/install_nvim.sh"
@@ -820,7 +820,7 @@ install_docker() {
 
     case "$os" in
         nixos)
-            print_info "NixOS detected. Manage Docker through nixos-config; skipping Docker installation."
+            print_info "NixOS detected; manage Docker with Nix or a user-selected service. Skipping Docker installation."
             return 0
             ;;
         macos)
@@ -932,7 +932,7 @@ install_extra_tools() {
     print_info "Checking and installing additional tools..."
 
     if [[ "$(detect_os)" == "nixos" ]]; then
-        print_info "NixOS detected; manage Docker, Zellij, and Herdr with nixos-config. Skipping additional tool installation."
+        print_info "NixOS detected; manage Docker, Zellij, and Herdr with Nix or user-selected tools. Skipping additional tool installation."
         return 0
     fi
 
