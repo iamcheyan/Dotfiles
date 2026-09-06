@@ -23,6 +23,11 @@ fi
 # Resolve the repository from this file's location so the checkout can live
 # anywhere. In zsh, %x expands to the file currently being sourced.
 dotfiles_root="${${(%):-%x}:A:h}"
+if [[ ! -d "$dotfiles_root/plugins" ]]; then
+    if [[ -d "${DOTFILES:-$HOME/dotfiles}/plugins" ]]; then
+        dotfiles_root="${DOTFILES:-$HOME/dotfiles}"
+    fi
+fi
 
 export PATH="$HOME/.fzf/bin:$PATH"
 
